@@ -1,6 +1,10 @@
-<a routerLink="/" routerLinkActive="active">Main</a>
-<br />
-<a routerLink="/login" routerLinkActive="active">Login</a>
-<br />
-<a routerLink="/register" routerLinkActive="active">Register</a>
-<router-outlet></router-outlet>
+<div class="container">
+  <a routerLink="/" routerLinkActive="active">Main</a>
+  <br />
+  <a routerLink="/login" routerLinkActive="active">Login</a>
+  <br />
+  <a routerLink="/register" routerLinkActive="active">Register</a>
+
+  <li>{{ s }}</li>
+  <router-outlet></router-outlet>
+</div>
