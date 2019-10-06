@@ -5,6 +5,7 @@ export const ALL_BOOKS_QUERY = gql`
   query {
     books(all: true) {
       nodes {
+        isbn
         title
         author
       }

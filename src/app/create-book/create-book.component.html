@@ -1,15 +1,37 @@
-<input
-  class="mb2"
-  [(ngModel)]="title"
-  type="text"
-  placeholder="The book name"
-/>
-<input
-  class="mb2"
-  [(ngModel)]="author"
-  type="text"
-  placeholder="The author of the book"
-/>
-<button (click)="createBook()">
-  Submit
-</button>
+<form action="javascript:;" (submit)="createBook()">
+  <input
+    class="mb2"
+    [(ngModel)]="title"
+    type="text"
+    name="title"
+    placeholder="The book name"
+  />
+  <input
+    class="mb2"
+    [(ngModel)]="author"
+    name="author"
+    type="text"
+    placeholder="The author of the book"
+  />
+  <select name="BookFormats" [(ngModel)]="format">
+    <option value="" [ngValue]="null" selected disabled hidden
+      >BOOK FORMAT</option
+    >
+    <option *ngFor="let format of BookFormats" value="{{ format.name }}">{{
+      format.name
+    }}</option>
+  </select>
+
+  <select name="Schools" [(ngModel)]="schools">
+    <option value="" [ngValue]="null" selected disabled hidden>SCHOOL</option>
+    <option
+      style="text-transform: uppercase;"
+      *ngFor="let school of schools"
+      value="{{ school.slug }}"
+      >{{ school.slug }}</option
+    >
+  </select>
+  <button type="submit">
+    Submit
+  </button>
+</form>
