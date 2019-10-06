@@ -14,23 +14,34 @@ import { registerLocaleData } from "@angular/common";
 import en from "@angular/common/locales/en";
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
-import { GraphQLModule } from "./graphql.module";
+import { GraphQLModule } from "./apollo.config";
+
+import { BookItemComponent } from "./book-item/book-item.component";
+import { BookListComponent } from "./book-list/book-list.component";
+import { CreateBookComponent } from './create-book/create-book.component';
 
 registerLocaleData(en);
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, RegisterComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    BookItemComponent,
+    BookListComponent,
+    CreateBookComponent
+  ],
   imports: [
     HttpLinkModule,
     BrowserModule,
+    GraphQLModule,
     AppRoutingModule,
     ApolloModule,
     NgZorroAntdModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    BrowserAnimationsModule,
-    GraphQLModule
+    BrowserAnimationsModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

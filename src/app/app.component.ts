@@ -7,6 +7,7 @@ const BOOK_QUERY = gql`
     books(all: true) {
       nodes {
         title
+        author
       }
     }
   }
