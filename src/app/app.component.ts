@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import gql from "graphql-tag";
-import { ALL_BOOKS_QUERY, AllBooksQueryResponse } from "./graphql";
+import { BOOK_QUERY, AllBooksQueryResponse } from "./graphql";
 
 type Book = {
   nodes: any;
@@ -18,13 +18,6 @@ type Response = {
 })
 export class AppComponent {
   title = "bookshelf";
-  constructor(apollo: Apollo) {
-    apollo
-      .watchQuery<Response>({
-        query: ALL_BOOKS_QUERY
-      })
-      .valueChanges.subscribe(result => {
-        console.log(result.data.books.nodes);
-      });
-  }
+
+  constructor(public apollo: Apollo) {}
 }

@@ -1,11 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import {
-  ADD_BOOK_MUTATION,
-  AddBookMutationResponse,
-  ALL_BOOKS_QUERY,
-  AllBooksQueryResponse
-} from "../graphql";
+import { ADD_BOOK_MUTATION } from "../graphql";
 import * as RandExp from "randexp";
 import gql from "graphql-tag";
 
@@ -24,10 +19,11 @@ export class CreateBookComponent implements OnInit {
   title: string = "";
   author: string = "";
   editor: string = "";
-  lang: string = ""; // ADD OPTION HERE LATER
+  lang: string = "";
   cover: string = "";
-  schools: [string] = [""]; // ADD OPTION HERE LATER
-  format: string = ""; // ADD OPTION HERE LATER
+  schools: [string] = [""];
+  beCodeSchools: [string] = [""];
+  format: string = "";
   BookFormats: [] = [];
 
   constructor(public apollo: Apollo) {}
@@ -52,11 +48,8 @@ export class CreateBookComponent implements OnInit {
         `
       })
       .valueChanges.subscribe(response => {
-        this.BookFormats = [];
-        this.schools = [""];
         this.BookFormats = response.data.__type.enumValues;
-        this.schools = response.data.schools.nodes;
-        console.log(this.schools);
+        this.beCodeSchools = response.data.schools.nodes;
       });
   }
 

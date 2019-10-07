@@ -1,1 +1,2 @@
-<div>{{ book.title }} {{ book.author }}</div>
+<p *ngIf="bookData">{{ bookData.title }}</p>
+<button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>

@@ -1,7 +1,13 @@
 <h4 *ngIf="loading">Loading...</h4>
-<hn-book-item
-  *ngFor="let book of allBooks"
-  [book]="book"
-  [attr.data-isbn]="book.isbn"
->
-</hn-book-item>
+<div class="books-container">
+  <div
+    *ngFor="let book of allBooks"
+    [attr.data-isbn]="book.isbn"
+    class="book-container"
+  >
+    <div class="book">
+      {{ book.title }}, {{ book.author }}
+      <button routerLink="/books/{{ book.isbn }}">VIEW</button>
+    </div>
+  </div>
+</div>
