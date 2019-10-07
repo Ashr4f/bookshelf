@@ -1,3 +1,13 @@
+<nz-select
+  style="width: 120px;"
+  [(ngModel)]="selectedValue"
+  nzAllowClear
+  nzPlaceHolder="Choose"
+>
+  <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+  <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+</nz-select>
+
 <form action="javascript:;" (submit)="createBook()">
   <input
     class="mb2"
@@ -22,14 +32,15 @@
     }}</option>
   </select>
 
-  <select name="Schools" [(ngModel)]="schools">
-    <option value="" [ngValue]="null" selected disabled hidden>SCHOOL</option>
-    <option
-      style="text-transform: uppercase;"
-      *ngFor="let school of schools"
-      value="{{ school.slug }}"
-      >{{ school.slug }}</option
-    >
+  <select
+    style="text-transform: uppercase;"
+    name="Schools"
+    [(ngModel)]="schools"
+  >
+    <option value="" [ngValue]="null" selected disabled hidden>School</option>
+    <option *ngFor="let school of beCodeSchools" value="{{ school.slug }}">{{
+      school.slug
+    }}</option>
   </select>
   <button type="submit">
     Submit
