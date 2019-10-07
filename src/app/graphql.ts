@@ -13,6 +13,27 @@ export const ALL_BOOKS_QUERY = gql`
   }
 `;
 
+export const BOOK_QUERY = gql`
+  query getBookByISBN($isbn: ID!) {
+    book(isbn: $isbn) {
+      isbn
+      title
+      author
+      editor
+      lang {
+        code
+      }
+      availabilities {
+        school {
+          slug
+        }
+      }
+      cover
+      format
+    }
+  }
+`;
+
 export interface AllBooksQueryResponse {
   allBooks: Book[];
   loading: boolean;
@@ -42,10 +63,39 @@ export const ADD_BOOK_MUTATION = gql`
       }
     ) {
       isbn
-      title
-      author
-      editor
-      format
+    }
+  }
+`;
+
+export const EDIT_BOOK_MUTATION = gql`
+  mutation editBookMutation(
+    $isbn: String!
+    $title: String!
+    $author: String!
+    $editor: String!
+    $lang: String!
+    $cover: String
+    $schools: [String!]!
+    $format: BookFormat!
+  ) {
+    editBook(
+      book: {
+        isbn: $isbn
+        title: $title
+        author: $author
+        editor: $editor
+        lang: $lang
+        cover: $cover
+        schools: $schools
+        format: $format
+      }
+    ) {
+      isbn
+      availabilities {
+        school {
+          slug
+        }
+      }
     }
   }
 `;
