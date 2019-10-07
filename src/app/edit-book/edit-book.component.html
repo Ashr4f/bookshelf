@@ -1,0 +1,39 @@
+<form action="javascript:;" (submit)="editCurrentBook()">
+  <input
+    class="mb2"
+    [(ngModel)]="title"
+    type="text"
+    name="title"
+    placeholder="The book name"
+  />
+  <input
+    class="mb2"
+    [(ngModel)]="author"
+    name="author"
+    type="text"
+    placeholder="The author of the book"
+  />
+  <select name="BookFormats" [(ngModel)]="format"
+    ><option selected hidden disabled value="{{ format.name }}">{{
+      format.name
+    }}</option>
+    <option *ngFor="let format of BookFormats" value="{{ format.name }}">{{
+      format.name
+    }}</option>
+  </select>
+
+  <select
+    style="text-transform: uppercase;"
+    name="Schools"
+    [(ngModel)]="schools"
+    ><option selected hidden disabled value="{{ currentSchool }}">{{
+      currentSchool
+    }}</option>
+    <option *ngFor="let school of beCodeSchools" value="{{ school.slug }}">{{
+      school.slug
+    }}</option>
+  </select>
+  <button type="submit">
+    Submit
+  </button>
+</form>
