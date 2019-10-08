@@ -1,10 +1,17 @@
 import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators
 } from "@angular/forms";
+import { Apollo } from "apollo-angular";
+import { ADD_USER_MUTATION } from "../graphql";
+
+type RegisterData = {
+  registerWithBasic: { token: string; connected: Boolean };
+};
 
 @Component({
   selector: "app-register",
@@ -13,16 +20,25 @@ import {
 })
 export class RegisterComponent implements OnInit {
   validateForm: FormGroup;
+  email: string = "";
+  nickname: string = "";
+  password: string = "";
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
+
+    if (this.validateForm.status === "VALID") {
+      this.email = this.validateForm.value.email;
+      this.nickname = this.validateForm.value.nickname;
+      this.password = this.validateForm.value.password;
+      this.addUser();
+    }
   }
 
   updateConfirmValidator(): void {
-    /** wait for refresh value */
     Promise.resolve().then(() =>
       this.validateForm.controls.checkPassword.updateValueAndValidity()
     );
@@ -36,23 +52,42 @@ export class RegisterComponent implements OnInit {
     }
     return {};
   };
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    public apollo: Apollo
+  ) {}
 
-  getCaptcha(e: MouseEvent): void {
-    e.preventDefault();
+  addUser() {
+    this.apollo
+      .mutate<RegisterData>({
+        mutation: ADD_USER_MUTATION,
+        variables: {
+          target: {
+            collection: "juniors",
+            email: this.email
+          },
+          login: this.nickname,
+          pass: this.password,
+          useCookie: false
+        }
+      })
+      .subscribe(response => {
+        localStorage.setItem("token", response.data.registerWithBasic.token);
+        console.log(response);
+        if (response.data.registerWithBasic.connected) {
+          this.router.navigate(["/"]);
+        }
+      });
   }
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       email: [null, [Validators.email, Validators.required]],
       password: [null, [Validators.required]],
       checkPassword: [null, [Validators.required, this.confirmationValidator]],
-      nickname: [null, [Validators.required]],
-      phoneNumberPrefix: ["+86"],
-      phoneNumber: [null, [Validators.required]],
-      website: [null, [Validators.required]],
-      captcha: [null, [Validators.required]],
-      agree: [false]
+      nickname: [null, [Validators.required]]
     });
   }
 }
