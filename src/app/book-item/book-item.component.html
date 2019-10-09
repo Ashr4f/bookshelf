@@ -1,2 +1,19 @@
-<p *ngIf="bookData">{{ bookData.title }}</p>
-<button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
+<p *ngIf="loading">Loading...</p>
+<div *ngIf="!loading">
+  {{ bookData.title }}
+
+  <p *ngIf="bookData.availabilities[0].available">
+    Available: {{ user.owner.name }}
+  </p>
+  <p *ngIf="!bookData.availabilities[0].available">
+    Not available, borrowed by:<span> {{ user.owner.name }}</span>
+  </p>
+  <nz-rate
+    [(ngModel)]="bookReview"
+    [nzTooltips]="tooltips"
+    (ngModelChange)="sendBookReview()"
+  ></nz-rate>
+  <div>
+    <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
+  </div>
+</div>
