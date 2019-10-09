@@ -1,13 +1,10 @@
 <div class="container">
-  <a routerLink="/" routerLinkActive="active">Main</a>
-  <br />
-  <a routerLink="/login" routerLinkActive="active">Login</a>
-  <br />
-  <a routerLink="/register" routerLinkActive="active">Register</a>
-  <br />
-  <a routerLink="/books/create" routerLinkActive="active">Create Book</a>
-  <br />
-  <a routerLink="/books" routerLinkActive="active">Show all books</a>
-  <br />
+  <a routerLink="/" routerLinkActive="active">Main <br /></a>
+  <a routerLink="/login" routerLinkActive="active">Login <br /></a>
+  <a routerLink="/register" routerLinkActive="active">Register <br /></a>
+  <a routerLink="/books/create" routerLinkActive="active">Create Book <br /></a>
+  <a routerLink="/books" routerLinkActive="active">Show all books <br /></a>
+  <a routerLink="/profile" routerLinkActive="active">Profile <br /></a>
+  <button (click)="logout()">LOGOUT</button>
   <router-outlet></router-outlet>
 </div>
