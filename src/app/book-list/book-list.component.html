@@ -6,7 +6,14 @@
     class="book-container"
   >
     <div class="book">
-      {{ book.title }}, {{ book.author }}
+      {{ book.title }}, {{ book.author }},
+      <span *ngIf="book.availabilities[0].available">Available</span>
+      <span *ngIf="!book.availabilities[0].available">Not available</span>
+      <nz-rate
+        [(ngModel)]="bookReview"
+        [nzTooltips]="tooltips"
+        nzDisabled
+      ></nz-rate>
       <button routerLink="/books/{{ book.isbn }}">VIEW</button>
     </div>
   </div>

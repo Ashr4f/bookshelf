@@ -1,12 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Apollo } from "apollo-angular";
 import { Book } from "../types";
-import { ALL_BOOKS_QUERY, AllBooksQueryResponse } from "../graphql";
-
-type Response = {
-  books: any;
-  loading: boolean;
-};
+import { QueriesService } from "src/app/services/gql-queries.service";
 
 @Component({
   selector: "hn-book-list",
@@ -16,17 +10,16 @@ type Response = {
 export class BookListComponent implements OnInit {
   allBooks: Book[] = [];
   loading: boolean = true;
+  tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
+  bookReview: number;
 
-  constructor(private apollo: Apollo) {}
+  constructor(private gqlQueries: QueriesService) {}
 
   ngOnInit() {
-    this.apollo
-      .watchQuery<Response>({
-        query: ALL_BOOKS_QUERY
-      })
-      .valueChanges.subscribe(response => {
-        this.allBooks = response.data.books.nodes;
-        this.loading = response.data.loading;
-      });
+    this.gqlQueries.getAllBooks().then((booksData: any) => {
+      this.loading = booksData.loading;
+      this.allBooks = booksData.data.books.nodes;
+      console.log(booksData);
+    });
   }
 }
