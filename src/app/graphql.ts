@@ -22,6 +22,34 @@ export const ADD_USER_MUTATION = gql`
   }
 `;
 
+export const LOGIN_MUTATION = gql`
+  mutation loginWithBasic(
+    $login: String!
+    $pass: String!
+    $useCookie: Boolean
+  ) {
+    loginWithBasic(login: $login, pass: $pass, useCookie: $useCookie) {
+      connected
+      token
+      headers
+      csrfToken
+    }
+  }
+`;
+
+export const ME_QUERY = gql`
+  query {
+    consumer {
+      type
+      active
+      owner {
+        uid
+        slug
+      }
+    }
+  }
+`;
+
 export const ALL_BOOKS_QUERY = gql`
   query {
     books(all: true) {
@@ -29,6 +57,10 @@ export const ALL_BOOKS_QUERY = gql`
         isbn
         title
         author
+        cover
+        availabilities {
+          available
+        }
       }
     }
   }
@@ -44,7 +76,22 @@ export const BOOK_QUERY = gql`
       lang {
         code
       }
+      reviews(all: true) {
+        totalCount
+        nodes {
+          uid
+          reviewer {
+            slug
+            uid
+          }
+          note
+        }
+      }
       availabilities {
+        available
+        borrower {
+          name
+        }
         school {
           slug
         }
@@ -84,6 +131,41 @@ export const ADD_BOOK_MUTATION = gql`
       }
     ) {
       isbn
+    }
+  }
+`;
+
+export const ADD_BOOK_REVIEW = gql`
+  mutation addBookReviewMutation(
+    $bookISBN: String!
+    $review: BookReviewInput!
+  ) {
+    addBookReview(bookISBN: $bookISBN, review: $review) {
+      note
+      reviewer {
+        name
+        slug
+      }
+      book {
+        reviews {
+          edges {
+            cursor
+            node {
+              note
+            }
+          }
+          totalCount
+        }
+      }
+      uid
+    }
+  }
+`;
+
+export const EDIT_BOOK_REVIEW = gql`
+  mutation editBookReviewMutation($uid: ID!, $review: BookReviewInput!) {
+    editBookReview(uid: $uid, review: $review) {
+      note
     }
   }
 `;
