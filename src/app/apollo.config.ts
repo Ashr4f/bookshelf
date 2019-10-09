@@ -19,8 +19,10 @@ export class GraphQLModule {
       operation.setContext({
         headers: {
           Authorization:
+            token ||
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoia2V5IiwidWlkIjoiZjc2NzA2NjItYjlkOC00NDA3LWI5MTQtZmUzOGZhZGVmZjA5Iiwia2V5IjoiMzRiMDFhNTYiLCJpYXQiOjE1Njk5MTQxNjB9.lyFUBYqnrG22eOrw2mkfPhFv7mShw6cw-X7bziN491Y"
         },
+        fetchPolicy: "cache-and-network",
         cors: true
       });
 
