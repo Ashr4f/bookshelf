@@ -30,7 +30,6 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "ng-zorro-antd": "^8.1.2",
-    "randexp": "^0.5.3",
     "rxjs": "^6.4.0",
     "subscriptions-transport-ws": "^0.9.16",
     "tslib": "^1.10.0",
