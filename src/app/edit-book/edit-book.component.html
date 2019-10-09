@@ -1,4 +1,4 @@
-<form action="javascript:;" (submit)="editCurrentBook()">
+<!-- <form action="javascript:;" (submit)="editCurrentBook()">
   <input
     class="mb2"
     [(ngModel)]="title"
@@ -36,4 +36,112 @@
   <button type="submit">
     Submit
   </button>
+</form> -->
+
+<form
+  nz-form
+  [formGroup]="validateForm"
+  class="edit-book-form"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please insert the book title!">
+      <nz-input-group nzPrefixIcon="book">
+        <input
+          nz-input
+          formControlName="title"
+          type="text"
+          placeholder="The book title"
+          value="{{ title }}"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please insert the book's author!">
+      <nz-input-group nzPrefixIcon="user">
+        <input
+          nz-input
+          formControlName="author"
+          type="text"
+          placeholder="The book's author"
+          value="{{ author }}"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please insert a url to the book's cover">
+      <nz-input-group nzPrefixIcon="link">
+        <input
+          nz-input
+          formControlName="cover"
+          type="text"
+          placeholder="The book's cover URL"
+          value="{{ cover }}"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please insert the book's language!">
+      <nz-select
+        formControlName="bookLanguage"
+        nzAllowClear
+        nzPlaceHolder="BOOK LANGUAGE"
+        nzShowSearch
+      >
+        <nz-option nzValue="fr" nzLabel="French"></nz-option>
+        <nz-option nzValue="en" nzLabel="English"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please choose the book format">
+      <nz-select
+        formControlName="bookFormat"
+        nzAllowClear
+        nzShowSearch
+        nzPlaceHolder="{{ format }}"
+      >
+        <nz-option
+          *ngFor="let format of BookFormats"
+          nzValue="{{ format.name }}"
+          nzLabel="{{ format.name }}"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please choose the book location">
+      <nz-select
+        formControlName="bookSchool"
+        nzAllowClear
+        nzShowSearch
+        nzPlaceHolder="{{ currentSchool }}"
+      >
+        <nz-option
+          *ngFor="let school of beCodeSchools"
+          nzValue="{{ school.slug }}"
+          nzLabel="{{ school.slug }}"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <span *ngIf="editHasErrors" style="color: #f5222d;">{{
+      EditBookErrorMessage
+    }}</span>
+    <nz-form-control>
+      <button nz-button class="edit-book-form-button" [nzType]="'primary'">
+        Edit
+      </button>
+    </nz-form-control>
+  </nz-form-item>
 </form>
