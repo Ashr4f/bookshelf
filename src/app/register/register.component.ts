@@ -21,8 +21,10 @@ type RegisterData = {
 export class RegisterComponent implements OnInit {
   validateForm: FormGroup;
   email: string = "";
-  nickname: string = "";
+  username: string = "";
   password: string = "";
+  registerHasError: Boolean = false;
+  registerError: Boolean = false;
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -32,7 +34,7 @@ export class RegisterComponent implements OnInit {
 
     if (this.validateForm.status === "VALID") {
       this.email = this.validateForm.value.email;
-      this.nickname = this.validateForm.value.nickname;
+      this.username = this.validateForm.value.username;
       this.password = this.validateForm.value.password;
       this.addUser();
     }
@@ -52,6 +54,7 @@ export class RegisterComponent implements OnInit {
     }
     return {};
   };
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -65,21 +68,31 @@ export class RegisterComponent implements OnInit {
         mutation: ADD_USER_MUTATION,
         variables: {
           target: {
-            collection: "juniors",
+            collection: "JUNIOR",
             email: this.email
           },
-          login: this.nickname,
+          login: this.username,
           pass: this.password,
           useCookie: false
         }
       })
-      .subscribe(response => {
-        localStorage.setItem("token", response.data.registerWithBasic.token);
-        console.log(response);
-        if (response.data.registerWithBasic.connected) {
-          this.router.navigate(["/"]);
+      .subscribe(
+        response => {
+          localStorage.setItem("token", response.data.registerWithBasic.token);
+          console.log(response);
+          if (response.data.registerWithBasic.connected) {
+            this.router.navigate(["/"]);
+          }
+        },
+        err => {
+          this.registerHasError = true;
+          console.log();
+
+          this.registerError = err.message.split(/juniors:(.+)/)[1]
+            ? "You must insert the email that you use at BeCode"
+            : err.message.split(/error:(.+)/)[1];
         }
-      });
+      );
   }
 
   ngOnInit(): void {
@@ -87,7 +100,7 @@ export class RegisterComponent implements OnInit {
       email: [null, [Validators.email, Validators.required]],
       password: [null, [Validators.required]],
       checkPassword: [null, [Validators.required, this.confirmationValidator]],
-      nickname: [null, [Validators.required]]
+      username: [null, [Validators.required]]
     });
   }
 }
