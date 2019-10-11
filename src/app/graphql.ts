@@ -58,8 +58,17 @@ export const ALL_BOOKS_QUERY = gql`
         title
         author
         cover
+        reviews {
+          totalCount
+          nodes {
+            note
+          }
+        }
         availabilities {
           available
+          school {
+            slug
+          }
         }
       }
     }
@@ -91,6 +100,8 @@ export const BOOK_QUERY = gql`
         available
         borrower {
           name
+          uid
+          slug
         }
         school {
           slug
@@ -98,6 +109,22 @@ export const BOOK_QUERY = gql`
       }
       cover
       format
+    }
+  }
+`;
+
+export const BOOK_SELECT_OPTIONS = gql`
+  {
+    __type(name: "BookFormat") {
+      name
+      enumValues {
+        name
+      }
+    }
+    schools {
+      nodes {
+        slug
+      }
     }
   }
 `;
@@ -135,6 +162,38 @@ export const ADD_BOOK_MUTATION = gql`
   }
 `;
 
+export const RENT_BOOK = gql`
+  mutation rentBookMutation($book: String!, $school: String!) {
+    borrowBook(book: $book, school: $school) {
+      isbn
+      availabilities {
+        borrower {
+          uid
+          name
+          slug
+        }
+        available
+      }
+    }
+  }
+`;
+
+export const RETURN_BOOK = gql`
+  mutation returnBookMutation($book: String!, $school: String!) {
+    returnBook(book: $book, school: $school) {
+      isbn
+      availabilities {
+        borrower {
+          uid
+          name
+          slug
+        }
+        available
+      }
+    }
+  }
+`;
+
 export const ADD_BOOK_REVIEW = gql`
   mutation addBookReviewMutation(
     $bookISBN: String!
@@ -167,6 +226,12 @@ export const EDIT_BOOK_REVIEW = gql`
     editBookReview(uid: $uid, review: $review) {
       note
     }
+  }
+`;
+
+export const DELETE_BOOK_REVIEW = gql`
+  mutation deleteBookReviewMutation($uid: ID!) {
+    deleteBookReview(uid: $uid)
   }
 `;
 
