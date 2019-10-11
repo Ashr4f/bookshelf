@@ -1,20 +1,23 @@
 <h4 *ngIf="loading">Loading...</h4>
 <div class="books-container">
   <div
-    *ngFor="let book of allBooks"
+    *ngFor="let book of allBooks; let i = index"
     [attr.data-isbn]="book.isbn"
     class="book-container"
   >
+    <hr />
     <div class="book">
       {{ book.title }}, {{ book.author }},
       <span *ngIf="book.availabilities[0].available">Available</span>
       <span *ngIf="!book.availabilities[0].available">Not available</span>
       <nz-rate
-        [(ngModel)]="bookReview"
+        [(ngModel)]="booksReviews[i]"
         [nzTooltips]="tooltips"
+        nzAllowHalf
         nzDisabled
-      ></nz-rate>
-      <button routerLink="/books/{{ book.isbn }}">VIEW</button>
+      ></nz-rate
+      >({{ book.reviews.totalCount }})
+      <a routerLink="/books/{{ book.isbn }}">VIEW</a>
     </div>
   </div>
 </div>
