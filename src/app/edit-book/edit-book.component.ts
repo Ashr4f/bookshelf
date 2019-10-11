@@ -1,16 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { BOOK_QUERY, EDIT_BOOK_MUTATION } from "../graphql";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "apollo-client/util/Observable";
-import gql from "graphql-tag";
+import { QueriesService } from "../services/gql-queries.service";
 
-type Response = {
-  __type: { enumValues: [] };
-  book: any;
-  schools: { nodes: [string] };
-};
 @Component({
   selector: "app-edit-book",
   templateUrl: "./edit-book.component.html",
@@ -38,10 +32,6 @@ export class EditBookComponent implements OnInit {
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
-      if (this.validateForm.controls[i].status === "INVALID") {
-        this.editHasErrors = true;
-        this.EditBookErrorMessage = "Please fill in the blank(s)";
-      }
     }
 
     if (this.validateForm.status === "VALID") {
@@ -51,9 +41,21 @@ export class EditBookComponent implements OnInit {
       this.cover = this.validateForm.value.cover;
       this.format = this.validateForm.value.bookFormat;
       this.schools = this.validateForm.value.bookSchool;
-      this.editHasErrors = false;
-      this.EditBookErrorMessage = "";
-      this.editCurrentBook();
+
+      this.gqlQueries
+        .editCurrentBook(
+          this.isbn,
+          this.title,
+          this.author,
+          this.editor,
+          this.lang,
+          this.cover,
+          this.schools,
+          this.format
+        )
+        .then(res => {
+          this.router.navigate([`/books/${this.isbn}`]);
+        });
     }
   }
 
@@ -62,7 +64,8 @@ export class EditBookComponent implements OnInit {
     public apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private gqlQueries: QueriesService
   ) {}
 
   ngOnInit() {
@@ -74,87 +77,42 @@ export class EditBookComponent implements OnInit {
       bookLanguage: [null, [Validators.required]],
       cover: [null, [Validators.required]]
     });
+
     this.routeSub = this.route.params.subscribe(params => {
       this.isbn = params["id"];
     });
 
-    this.apollo
-      .watchQuery<Response>({
-        query: gql`
-          {
-            __type(name: "BookFormat") {
-              name
-              enumValues {
-                name
-              }
-            }
-            schools {
-              nodes {
-                slug
-              }
-            }
-          }
-        `
-      })
-      .valueChanges.subscribe(response => {
-        this.BookFormats = response.data.__type.enumValues;
-        this.beCodeSchools = response.data.schools.nodes;
-      });
+    this.gqlQueries.getBookByISBN(this.isbn).then((response: any) => {
+      this.title = response.data.book.title;
+      this.author = response.data.book.author;
+      this.editor = response.data.book.editor;
+      this.lang = response.data.book.lang.code || response.data.book.lang.name;
+      this.cover = response.data.book.cover;
+      this.schools = response.data.book.availabilities;
+      this.format = response.data.book.format;
+      this.currentSchool = response.data.book.availabilities[0].school.slug;
 
-    this.apollo
-      .watchQuery<Response>({
-        query: BOOK_QUERY,
-        variables: {
-          isbn: this.isbn
-        }
-      })
-      .valueChanges.subscribe(response => {
-        this.title = response.data.book.title;
-        this.author = response.data.book.author;
-        this.editor = response.data.book.editor;
-        this.lang = response.data.book.lang.code;
-        this.cover = response.data.book.cover;
-        this.schools = response.data.book.availabilities;
-        this.format = response.data.book.format;
-        this.currentSchool = response.data.book.availabilities[0].school.slug;
+      this.gqlQueries.getBookSelectOptions().then((res: any) => {
+        this.BookFormats = res.data.__type.enumValues;
+        this.beCodeSchools = res.data.schools.nodes;
 
-        this.validateForm = this.fb.group({
-          title: [this.title, [Validators.required]],
-          author: [this.author, [Validators.required]],
-          bookFormat: [this.format, [Validators.required]],
-          bookSchool: [this.currentSchool, [Validators.required]],
-          bookLanguage: [this.lang, [Validators.required]],
-          cover: [this.cover, [Validators.required]]
-        });
+        this.validateForm.controls.title.setValue(this.title);
+        this.validateForm.controls.author.setValue(this.author);
+        this.validateForm.controls.bookFormat.setValue(this.format);
+        this.validateForm.controls.bookSchool.setValue(this.currentSchool);
+        this.validateForm.controls.bookLanguage.setValue(this.lang);
+        this.validateForm.controls.cover.setValue(this.cover);
       });
+    });
   }
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
   }
 
-  editCurrentBook() {
-    this.apollo
-      .mutate({
-        mutation: EDIT_BOOK_MUTATION,
-        variables: {
-          isbn: this.isbn,
-          title: this.title,
-          author: this.author,
-          editor: this.editor,
-          lang: this.lang,
-          cover: this.cover,
-          schools: this.schools,
-          format: this.format
-        }
-      })
-      .subscribe(
-        response => {
-          this.router.navigate([`/books/${this.isbn}`]);
-        },
-        err => {
-          console.log(err);
-        }
-      );
-  }
+  /* getBase64(img: File, callback: (img: string) => void): void {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result!.toString()));
+    reader.readAsDataURL(img);
+  } */
 }
