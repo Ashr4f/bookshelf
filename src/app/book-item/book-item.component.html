@@ -2,12 +2,26 @@
 <div *ngIf="!loading">
   {{ bookData.title }}
 
-  <p *ngIf="bookData.availabilities[0].available">
-    Available: {{ user.owner.name }}
-  </p>
-  <p *ngIf="!bookData.availabilities[0].available">
-    Not available, borrowed by:<span> {{ user.owner.name }}</span>
-  </p>
+  <div *ngIf="BookAvailability">
+    <p>Available</p>
+    <button type="button" (click)="rentCurrentBook()">RENT</button>
+  </div>
+
+  <div *ngIf="!BookAvailability">
+    <div *ngIf="bookBorrowerUID === undefined || bookBorrowerUID === ''">
+      Not available, borrowed by: <span>{{ bookBorrowerName }}</span>
+    </div>
+
+    <div *ngIf="bookBorrowerUID !== undefined || bookBorrowerUID !== ''">
+      <div *ngIf="bookBorrowerUID === user.owner.uid"></div>
+      <p>
+        You've borrowed this book, don't forget to return it when you finish
+        reading it please
+      </p>
+      <button type="button" (click)="returnCurrentBook()">RETURN BOOK</button>
+    </div>
+  </div>
+
   <nz-rate
     [(ngModel)]="bookReview"
     [nzTooltips]="tooltips"
