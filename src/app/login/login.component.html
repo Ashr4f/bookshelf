@@ -18,14 +18,22 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-control nzErrorTip="Please input your password!">
-      <nz-input-group nzPrefixIcon="lock">
+      <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
         <input
-          type="password"
+          [type]="passwordVisible ? 'text' : 'password'"
           nz-input
           formControlName="password"
           placeholder="Password"
         />
       </nz-input-group>
+
+      <ng-template #suffixTemplate>
+        <i
+          nz-icon
+          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+          (click)="passwordVisible = !passwordVisible"
+        ></i>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
@@ -33,7 +41,12 @@
       <span *ngIf="wrongData" style="color: #f5222d;"
         >Wrong username or password</span
       >
-      <button nz-button class="login-form-button" [nzType]="'primary'">
+      <button
+        nz-button
+        [nzLoading]="loginLoading"
+        class="login-form-button"
+        [nzType]="'primary'"
+      >
         Log in
       </button>
       Or

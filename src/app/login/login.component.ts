@@ -18,6 +18,8 @@ export class LoginComponent implements OnInit {
   user: string = "";
   password: string = "";
   wrongData: Boolean = false;
+  passwordVisible: Boolean = false;
+  loginLoading: Boolean = false;
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -25,6 +27,7 @@ export class LoginComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     if (this.validateForm.status === "VALID") {
+      this.loginLoading = true;
       this.user = this.validateForm.value.userName;
       this.password = this.validateForm.value.password;
       this.login();
@@ -50,6 +53,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         response => {
           this.wrongData = false;
+          this.loginLoading = false;
           localStorage.setItem("token", response.data.loginWithBasic.token);
           if (response.data.loginWithBasic.connected) {
             this.router.navigate(["/"]);
@@ -57,6 +61,7 @@ export class LoginComponent implements OnInit {
         },
         err => {
           this.wrongData = true;
+          this.loginLoading = false;
           console.log(err);
         }
       );
