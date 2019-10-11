@@ -2,12 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ADD_BOOK_MUTATION } from "../graphql";
-import gql from "graphql-tag";
-
-type Response = {
-  __type: { enumValues: [] };
-  schools: { nodes: [string] };
-};
+import { QueriesService } from "../services/gql-queries.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-create-book",
@@ -29,6 +25,29 @@ export class CreateBookComponent implements OnInit {
   beCodeSchools: [string] = [""];
   format: string = "";
   BookFormats: [] = [];
+  constructor(
+    public apollo: Apollo,
+    private fb: FormBuilder,
+    private gqlQueries: QueriesService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.validateForm = this.fb.group({
+      bookISBN: [null, [Validators.required]],
+      title: [null, [Validators.required]],
+      author: [null, [Validators.required]],
+      bookFormat: [null, [Validators.required]],
+      bookSchool: [null, [Validators.required]],
+      bookLanguage: [null, [Validators.required]],
+      cover: [null, [Validators.required]]
+    });
+
+    this.gqlQueries.getBookSelectOptions().then((response: any) => {
+      this.BookFormats = response.data.__type.enumValues;
+      this.beCodeSchools = response.data.schools.nodes;
+    });
+  }
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -45,71 +64,29 @@ export class CreateBookComponent implements OnInit {
       this.cover = this.validateForm.value.cover;
       this.format = this.validateForm.value.bookFormat;
       this.schools = this.validateForm.value.bookSchool;
-      this.createBook();
-    }
-  }
 
-  constructor(public apollo: Apollo, private fb: FormBuilder) {}
-
-  ngOnInit() {
-    this.validateForm = this.fb.group({
-      bookISBN: [null, [Validators.required]],
-      title: [null, [Validators.required]],
-      author: [null, [Validators.required]],
-      bookFormat: [null, [Validators.required]],
-      bookSchool: [null, [Validators.required]],
-      bookLanguage: [null, [Validators.required]],
-      cover: [null, [Validators.required]]
-    });
-
-    this.apollo
-      .watchQuery<Response>({
-        query: gql`
-          {
-            __type(name: "BookFormat") {
-              name
-              enumValues {
-                name
-              }
-            }
-            schools {
-              nodes {
-                slug
-              }
-            }
+      this.gqlQueries
+        .createBook(
+          this.isbn,
+          this.title,
+          this.author,
+          this.editor,
+          this.lang,
+          this.cover,
+          this.schools,
+          this.format
+        )
+        .then(
+          (response: any) => {
+            console.log(response);
+            this.router.navigate([`books/${response.data.addBook.isbn}`]);
+          },
+          err => {
+            this.bookExists = true;
+            this.CreateBookErrorMessage =
+              "Another book already exists with the same key!";
           }
-        `
-      })
-      .valueChanges.subscribe(response => {
-        this.BookFormats = response.data.__type.enumValues;
-        this.beCodeSchools = response.data.schools.nodes;
-      });
-  }
-
-  createBook() {
-    this.apollo
-      .mutate({
-        mutation: ADD_BOOK_MUTATION,
-        variables: {
-          isbn: this.isbn,
-          title: this.title,
-          author: this.author,
-          editor: this.editor,
-          lang: this.lang,
-          cover: this.cover,
-          schools: this.schools,
-          format: this.format
-        }
-      })
-      .subscribe(
-        response => {
-          console.log(response);
-        },
-        err => {
-          this.bookExists = true;
-          this.CreateBookErrorMessage =
-            "Another book already exists with the same key!";
-        }
-      );
+        );
+    }
   }
 }
