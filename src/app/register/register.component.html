@@ -19,23 +19,30 @@
 
   <nz-form-item>
     <nz-form-control nzErrorTip="Please input your password!">
-      <nz-input-group nzPrefixIcon="lock">
+      <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
         <input
-          type="password"
+          [type]="passwordVisible ? 'text' : 'password'"
           nz-input
           formControlName="password"
           (ngModelChange)="updateConfirmValidator()"
           placeholder="Password"
         />
       </nz-input-group>
+      <ng-template #suffixTemplate>
+        <i
+          nz-icon
+          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+          (click)="passwordVisible = !passwordVisible"
+        ></i>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="errorTpl">
-      <nz-input-group nzPrefixIcon="lock">
+      <nz-input-group nzPrefixIcon="lock" [nzSuffix]="confirmSuffixTemplate">
         <input
-          type="password"
+          [type]="confirmPasswordVisible ? 'text' : 'password'"
           nz-input
           formControlName="checkPassword"
           placeholder="Confirm password"
@@ -48,6 +55,13 @@
         <ng-container *ngIf="control.hasError('confirm')">
           Two passwords that you enter is inconsistent!
         </ng-container>
+      </ng-template>
+      <ng-template #confirmSuffixTemplate>
+        <i
+          nz-icon
+          [nzType]="confirmPasswordVisible ? 'eye-invisible' : 'eye'"
+          (click)="confirmPasswordVisible = !confirmPasswordVisible"
+        ></i>
       </ng-template>
     </nz-form-control>
   </nz-form-item>

@@ -25,6 +25,8 @@ export class RegisterComponent implements OnInit {
   password: string = "";
   registerHasError: Boolean = false;
   registerError: Boolean = false;
+  passwordVisible: Boolean = false;
+  confirmPasswordVisible: Boolean = false;
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {
@@ -86,7 +88,7 @@ export class RegisterComponent implements OnInit {
         },
         err => {
           this.registerHasError = true;
-          console.log();
+          console.log(err);
 
           this.registerError = err.message.split(/juniors:(.+)/)[1]
             ? "You must insert the email that you use at BeCode"
