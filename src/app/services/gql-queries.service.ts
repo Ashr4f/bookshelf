@@ -11,7 +11,8 @@ import {
   BOOK_SELECT_OPTIONS,
   ADD_BOOK_MUTATION,
   RENT_BOOK,
-  RETURN_BOOK
+  RETURN_BOOK,
+  BECODE_SCHOOLS_SLUGS
 } from "../graphql";
 
 @Injectable({
@@ -55,6 +56,14 @@ export class QueriesService {
     return await this.apollo
       .query({
         query: BOOK_SELECT_OPTIONS
+      })
+      .toPromise();
+  }
+
+  async getBeCodeSchools() {
+    return await this.apollo
+      .query({
+        query: BECODE_SCHOOLS_SLUGS
       })
       .toPromise();
   }
