@@ -97,6 +97,11 @@ export const BOOK_QUERY = gql`
         totalCount
         nodes {
           uid
+          createdAt {
+            iso {
+              datetime
+            }
+          }
           reviewer {
             slug
             uid
