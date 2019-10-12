@@ -45,6 +45,7 @@ export const ME_QUERY = gql`
       owner {
         uid
         slug
+        name
         ... on Junior {
           promo {
             school {
