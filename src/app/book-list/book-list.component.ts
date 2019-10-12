@@ -31,8 +31,8 @@ export class BookListComponent implements OnInit {
         let currentBookAvailabilities: any[] = [];
         book.availabilities.map((availability: any) => {
           currentBookAvailabilities.push(availability.school.slug);
-          this.allBookAvailabilities.push(currentBookAvailabilities);
         });
+        this.allBookAvailabilities.push(currentBookAvailabilities);
       });
 
       for (let i = 0; i < this.allNotes.length; i++) {
