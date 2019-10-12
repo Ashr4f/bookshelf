@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "apollo-client/util/Observable";
 import { Apollo } from "apollo-angular";
 import { QueriesService } from "src/app/services/gql-queries.service";
+import { formatDistance } from "date-fns";
 
 @Component({
   selector: "hn-book-item",
@@ -203,5 +204,9 @@ export class BookItemComponent implements OnInit {
           console.error(err);
         });
     }
+  }
+
+  formatCommentDate(commentDate: any) {
+    return formatDistance(new Date(), new Date(commentDate));
   }
 }
