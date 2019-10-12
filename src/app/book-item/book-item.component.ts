@@ -49,36 +49,43 @@ export class BookItemComponent implements OnInit {
         this.user = userData.data.consumer;
         this.userSchoolSlug = this.user.owner.promo.school.slug;
         this.bookData = bookData.data.book;
-        this.loading = bookData.loading;
 
-        this.gqlQueries.getBeCodeSchools().then((res: { data: any }) => {
-          res.data.schools.nodes.forEach((school: any) => {
-            this.schoolsAvailabilities.push(school);
-          });
-
-          this.bookData.availabilities.map((a: any) => {
-            this.schoolsAvailabilities.forEach(school => {
-              console.log(a, school);
+        this.gqlQueries
+          .getBeCodeSchools()
+          .then((res: { loading: boolean; data: any }) => {
+            this.loading = res.loading;
+            res.data.schools.nodes.forEach((school: any) => {
+              school.available = false;
+              this.schoolsAvailabilities.push(school);
             });
 
-            if (a.available === false) {
-              a.borrower.bookLendings.forEach((b: any) => {
-                if (b.book.isbn === this.isbn) {
-                  if (this.userSchoolSlug === b.school.slug) {
-                    this.BookAvailability = false;
-                    this.rentedBookSchool = b.school.slug;
-                    this.bookBorrowerName = a.borrower.name;
-                    this.bookBorrowerUID = a.borrower.uid;
+            this.bookData.availabilities.map((a: any) => {
+              if (a.school.slug === this.userSchoolSlug) {
+                this.bookInMySchool = true;
+              }
+
+              this.schoolsAvailabilities.forEach(school => {
+                if (a.available === true) {
+                  if (a.school.slug === school.slug) {
+                    school.available = true;
                   }
                 }
               });
-            }
 
-            if (a.school.slug === this.userSchoolSlug) {
-              this.bookInMySchool = true;
-            }
+              if (a.available === false) {
+                a.borrower.bookLendings.forEach((b: any) => {
+                  if (b.book.isbn === this.isbn) {
+                    if (this.userSchoolSlug === b.school.slug) {
+                      this.BookAvailability = false;
+                      this.rentedBookSchool = b.school.slug;
+                      this.bookBorrowerName = a.borrower.name;
+                      this.bookBorrowerUID = a.borrower.uid;
+                    }
+                  }
+                });
+              }
+            });
           });
-        });
 
         if (this.bookData.reviews.nodes.length > 0) {
           for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
@@ -104,8 +111,12 @@ export class BookItemComponent implements OnInit {
     this.gqlQueries
       .rentBook(this.isbn, this.userSchoolSlug)
       .then((res: any) => {
-        console.log(res);
         this.BookAvailability = false;
+        this.schoolsAvailabilities.map(school => {
+          if (school.slug === this.userSchoolSlug) {
+            school.available = false;
+          }
+        });
         res.data.borrowBook.availabilities.map((b: any) => {
           if (b.school.slug === this.userSchoolSlug) {
             this.bookBorrowerUID = b.borrower.uid;
@@ -120,6 +131,11 @@ export class BookItemComponent implements OnInit {
       .then((res: any) => {
         this.BookAvailability = true;
         this.bookBorrowerUID = undefined;
+        this.schoolsAvailabilities.map(school => {
+          if (school.slug === this.userSchoolSlug) {
+            school.available = true;
+          }
+        });
       });
   }
 
