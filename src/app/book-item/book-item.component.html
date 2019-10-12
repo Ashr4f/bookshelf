@@ -2,6 +2,8 @@
 <div *ngIf="!loading">
   {{ bookData.title }}
 
+  <p *ngIf="bookData.editor">Edited by: {{ bookData.editor }}</p>
+
   <div *ngIf="BookAvailability && bookInMySchool">
     <p>Available</p>
     <button type="button" (click)="rentCurrentBook()">RENT</button>
@@ -34,23 +36,19 @@
     <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
   </div>
 
-  <h4 style="margin-bottom: 16px;">Availabilities:</h4>
+  <h4 style="margin-bottom: 12px;">
+    Availabilities:
+  </h4>
   <div
     *ngFor="let school of schoolsAvailabilities"
     class="availability-tag"
-    nz-tooltip
-    nzTooltipTitle="Available"
+    title="{{ school.available ? 'Available' : 'Unavailable' }}"
   >
     <nz-tag *ngIf="school.available" [nzColor]="'green'">{{
       school.slug
     }}</nz-tag>
-    <nz-tag
-      *ngIf="!school.available"
-      nzTool
-      [nzColor]="'volcano'"
-      nz-tooltip
-      nzTooltipTitle="Unavailable"
-      >{{ school.slug }}</nz-tag
-    >
+    <nz-tag *ngIf="!school.available" nzTool [nzColor]="'volcano'">{{
+      school.slug
+    }}</nz-tag>
   </div>
 </div>

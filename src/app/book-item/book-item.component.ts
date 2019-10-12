@@ -49,6 +49,7 @@ export class BookItemComponent implements OnInit {
         this.user = userData.data.consumer;
         this.userSchoolSlug = this.user.owner.promo.school.slug;
         this.bookData = bookData.data.book;
+        console.log(this.bookData);
 
         this.gqlQueries
           .getBeCodeSchools()
