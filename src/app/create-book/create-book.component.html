@@ -90,16 +90,17 @@
   <nz-form-item>
     <nz-form-control nzErrorTip="Please choose the book location">
       <nz-select
-        formControlName="bookSchool"
+        nzMode="tags"
         nzAllowClear
-        nzShowSearch
         nzPlaceHolder="SCHOOL"
+        formControlName="bookSchool"
       >
         <nz-option
           *ngFor="let school of beCodeSchools"
           nzValue="{{ school.slug }}"
           nzLabel="{{ school.slug }}"
-        ></nz-option>
+        >
+        </nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>
