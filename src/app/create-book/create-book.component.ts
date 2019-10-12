@@ -68,7 +68,13 @@ export class CreateBookComponent implements OnInit {
       bookFormat: [null, [Validators.required]],
       bookSchool: [null, [Validators.required]],
       bookLanguage: [null, [Validators.required]],
-      cover: [null, [Validators.required]]
+      cover: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern("^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)")
+        ]
+      ]
     });
 
     this.gqlQueries.getBookSelectOptions().then((response: any) => {
@@ -116,27 +122,5 @@ export class CreateBookComponent implements OnInit {
           }
         );
     }
-  }
-
-  getBase64(img: File, callback: (img: string) => void): void {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  }
-
-  handleFileInput(files: FileList) {
-    this.coverLoading = true;
-    if (files.length) {
-      console.log(files);
-
-      this.getBase64(files.item(0), imageToBase64 => {
-        this.coverLoading = false;
-        this.coverUrl = imageToBase64;
-      });
-    }
-  }
-
-  openFileBrowser() {
-    document.querySelector("#bookCoverInput").click();
   }
 }

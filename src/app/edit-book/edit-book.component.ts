@@ -102,7 +102,13 @@ export class EditBookComponent implements OnInit {
       bookFormat: [null, [Validators.required]],
       bookSchool: [null, [Validators.required]],
       bookLanguage: [null, [Validators.required]],
-      cover: [null, [Validators.required]]
+      cover: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern("^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)")
+        ]
+      ]
     });
 
     this.routeSub = this.route.params.subscribe(params => {
@@ -134,7 +140,6 @@ export class EditBookComponent implements OnInit {
     });
 
     this.gqlQueries.getCurrentUser().then((user: any) => {
-      console.log(user.data.consumer.owner.name);
       this.editor = user.data.consumer.owner.name;
     });
   }
