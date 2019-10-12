@@ -8,8 +8,16 @@
     <hr />
     <div class="book">
       {{ book.title }}, {{ book.author }},
-      <span *ngIf="book.availabilities[0].available">Available</span>
-      <span *ngIf="!book.availabilities[0].available">Not available</span>
+      {{ allBookAvailabilities[i].length > 1 ? "schools: " : "school: " }}
+      {{
+        allBookAvailabilities[i]
+          .slice(0, -1)
+          .join(", ")
+          .concat(
+            allBookAvailabilities[i].length > 1 ? " and " : "",
+            allBookAvailabilities[i].slice(-1)
+          )
+      }}
       <nz-rate
         [(ngModel)]="booksReviews[i]"
         [nzTooltips]="tooltips"

@@ -8,12 +8,13 @@ import { QueriesService } from "src/app/services/gql-queries.service";
   styleUrls: ["./book-list.component.scss"]
 })
 export class BookListComponent implements OnInit {
-  allBooks: any[] = [];
+  allBooks: any[any] = [];
   loading: boolean = true;
   tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
   booksReviews: number[] = [];
   reviewersTotalCount: number;
   allNotes: any[] = [];
+  allBookAvailabilities: any[] = [];
 
   constructor(private gqlQueries: QueriesService) {}
 
@@ -21,21 +22,30 @@ export class BookListComponent implements OnInit {
     this.gqlQueries.getAllBooks().then((booksData: any) => {
       this.loading = booksData.loading;
       this.allBooks = booksData.data.books.nodes;
-      console.log(booksData.data.books.nodes);
 
       for (let i = 0; i < this.allBooks.length; i++) {
         this.allNotes[i] = this.allBooks[i].reviews.nodes;
       }
 
+      this.allBooks.forEach((book: any) => {
+        let currentBookAvailabilities: any[] = [];
+        book.availabilities.map((availability: any) => {
+          currentBookAvailabilities.push(availability.school.slug);
+          this.allBookAvailabilities.push(currentBookAvailabilities);
+        });
+      });
+
       for (let i = 0; i < this.allNotes.length; i++) {
         if (this.allNotes[i].length > 0) {
-          let somme = 0;
+          let reviewsTotal = 0;
           this.allBooks[i].reviews.nodes.map((a: any) => {
-            somme += a.note;
+            reviewsTotal += a.note;
           });
 
           this.booksReviews.push(
-            Math.round((somme / this.allBooks[i].reviews.totalCount) * 10) / 10
+            Math.round(
+              (reviewsTotal / this.allBooks[i].reviews.totalCount) * 10
+            ) / 10
           );
         } else {
           this.booksReviews.push(0);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "apollo-client/util/Observable";
 import { Apollo } from "apollo-angular";
@@ -7,21 +7,26 @@ import { QueriesService } from "src/app/services/gql-queries.service";
 @Component({
   selector: "hn-book-item",
   templateUrl: "./book-item.component.html",
-  styleUrls: ["./book-item.component.scss"]
+  styleUrls: ["./book-item.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class BookItemComponent implements OnInit {
   bookData: any;
   isbn: string;
-  borrower: string;
   tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
   bookReview: number;
   myBookReview: number;
+  borrower: string;
   bookBorrowerUID: string;
   bookBorrowerSlug: string;
   bookBorrowerName: string;
   BookAvailability: boolean = true;
+  bookInMySchool: boolean = false;
   BookCurrentSchoolSlug: string;
+  rentedBookSchool: string;
+  schoolsAvailabilities: any[] = [];
   user: any;
+  userSchoolSlug: any;
   loading: boolean = true;
   reviewUID: string;
 
@@ -42,20 +47,38 @@ export class BookItemComponent implements OnInit {
     this.gqlQueries.getCurrentUser().then((userData: any) => {
       this.gqlQueries.getBookByISBN(this.isbn).then((bookData: any) => {
         this.user = userData.data.consumer;
+        this.userSchoolSlug = this.user.owner.promo.school.slug;
         this.bookData = bookData.data.book;
-
-        console.log(this.bookData);
         this.loading = bookData.loading;
-        this.BookAvailability = bookData.data.book.availabilities[0].available;
 
-        if (bookData.data.book.availabilities[0].borrower) {
-          this.bookBorrowerUID =
-            bookData.data.book.availabilities[0].borrower.uid;
-          this.bookBorrowerSlug =
-            bookData.data.book.availabilities[0].borrower.slug;
-          this.bookBorrowerName =
-            bookData.data.book.availabilities[0].borrower.name;
-        }
+        this.gqlQueries.getBeCodeSchools().then((res: { data: any }) => {
+          res.data.schools.nodes.forEach((school: any) => {
+            this.schoolsAvailabilities.push(school);
+          });
+
+          this.bookData.availabilities.map((a: any) => {
+            this.schoolsAvailabilities.forEach(school => {
+              console.log(a, school);
+            });
+
+            if (a.available === false) {
+              a.borrower.bookLendings.forEach((b: any) => {
+                if (b.book.isbn === this.isbn) {
+                  if (this.userSchoolSlug === b.school.slug) {
+                    this.BookAvailability = false;
+                    this.rentedBookSchool = b.school.slug;
+                    this.bookBorrowerName = a.borrower.name;
+                    this.bookBorrowerUID = a.borrower.uid;
+                  }
+                }
+              });
+            }
+
+            if (a.school.slug === this.userSchoolSlug) {
+              this.bookInMySchool = true;
+            }
+          });
+        });
 
         if (this.bookData.reviews.nodes.length > 0) {
           for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
@@ -79,23 +102,24 @@ export class BookItemComponent implements OnInit {
 
   rentCurrentBook() {
     this.gqlQueries
-      .rentBook(this.isbn, this.bookData.availabilities[0].school.slug)
+      .rentBook(this.isbn, this.userSchoolSlug)
       .then((res: any) => {
         console.log(res);
-        this.BookAvailability = res.data.borrowBook.availabilities[0].available;
-        this.bookBorrowerUID =
-          res.data.borrowBook.availabilities[0].borrower.uid;
+        this.BookAvailability = false;
+        res.data.borrowBook.availabilities.map((b: any) => {
+          if (b.school.slug === this.userSchoolSlug) {
+            this.bookBorrowerUID = b.borrower.uid;
+          }
+        });
       });
   }
 
   returnCurrentBook() {
     this.gqlQueries
-      .returnBook(this.isbn, this.bookData.availabilities[0].school.slug)
+      .returnBook(this.isbn, this.userSchoolSlug)
       .then((res: any) => {
-        console.log(res);
-        this.BookAvailability = res.data.borrowBook.availabilities[0].available;
-        this.bookBorrowerUID =
-          res.data.borrowBook.availabilities[0].borrower.uid;
+        this.BookAvailability = true;
+        this.bookBorrowerUID = undefined;
       });
   }
 
