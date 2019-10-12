@@ -1,6 +1,27 @@
 <p *ngIf="loading">Loading...</p>
 <div *ngIf="!loading">
-  {{ bookData.title }}
+  <h3>{{ bookData.title }}</h3>
+
+  <div>
+    Global rating:
+    <nz-rate
+      [(ngModel)]="bookNotes"
+      [nzTooltips]="tooltips"
+      nzAllowHalf
+      nzDisabled
+    ></nz-rate
+    >({{ bookData.reviews.totalCount }})
+  </div>
+
+  <!-- <img
+    src="{{ bookData.cover }}"
+    alt="Book Cover"
+    #bookCover
+    (error)="
+      bookCover.onerror = null;
+      bookCover.src = '../assets/images/book-cover-placeholder.png'
+    "
+  /> -->
 
   <p *ngIf="bookData.editor">Edited by: {{ bookData.editor }}</p>
 
@@ -27,11 +48,14 @@
     This book isn't available at your school!
   </div>
 
-  <nz-rate
-    [(ngModel)]="bookReview"
-    [nzTooltips]="tooltips"
-    (ngModelChange)="sendBookReview()"
-  ></nz-rate>
+  <div>
+    <span>My rating: </span>
+    <nz-rate
+      [(ngModel)]="bookReview"
+      [nzTooltips]="tooltips"
+      (ngModelChange)="sendBookReview()"
+    ></nz-rate>
+  </div>
   <div>
     <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
   </div>
@@ -50,5 +74,20 @@
     <nz-tag *ngIf="!school.available" nzTool [nzColor]="'volcano'">{{
       school.slug
     }}</nz-tag>
+  </div>
+
+  <div>
+    <h4>Reviews:</h4>
+    <div *ngFor="let review of allBookReviews">
+      Rate:
+      <nz-rate
+        [(ngModel)]="review.note"
+        [nzTooltips]="tooltips"
+        nzAllowHalf
+        nzDisabled
+      ></nz-rate>
+
+      <p>{{ review.reviewer.name }}: {{ review.comment }}</p>
+    </div>
   </div>
 </div>

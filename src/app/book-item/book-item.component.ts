@@ -15,6 +15,8 @@ export class BookItemComponent implements OnInit {
   isbn: string;
   tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
   bookReview: number;
+  allBookReviews: any;
+  bookNotes: number = 0;
   myBookReview: number;
   borrower: string;
   bookBorrowerUID: string;
@@ -89,6 +91,18 @@ export class BookItemComponent implements OnInit {
           });
 
         if (this.bookData.reviews.nodes.length > 0) {
+          this.allBookReviews = this.bookData.reviews.nodes;
+          let reviewsTotal = 0;
+          this.allBookReviews.map((a: any) => {
+            reviewsTotal += a.note;
+          });
+          reviewsTotal =
+            Math.round((reviewsTotal / this.bookData.reviews.totalCount) * 10) /
+            10;
+          this.bookNotes = reviewsTotal;
+
+          console.log(this.allBookReviews);
+
           for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
             if (
               this.user.owner.uid ===
