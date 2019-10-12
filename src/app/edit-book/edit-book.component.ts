@@ -14,6 +14,7 @@ export class EditBookComponent implements OnInit {
   validateForm: FormGroup;
   editHasErrors: boolean = false;
   EditBookErrorMessage: string;
+  currentUserName: string = "";
 
   isbn: string = "";
   title: string = "";
@@ -24,8 +25,34 @@ export class EditBookComponent implements OnInit {
   schools: [string] = [""];
   format: string = "";
   beCodeSchools: [string] = [""];
-  currentSchool: string = "";
-  BookFormats: [] = [];
+  currentSchools: any[] = [];
+  bookFormats: [] = [];
+  bookLanguages: any[] = [
+    {
+      code: "en",
+      name: "English"
+    },
+    {
+      code: "fr",
+      name: "Français"
+    },
+    {
+      code: "nl",
+      name: "Dutch"
+    },
+    {
+      code: "de",
+      name: "Deutsche"
+    },
+    {
+      code: "tr",
+      name: "Türkçe"
+    },
+    {
+      code: "ar",
+      name: "العربية"
+    }
+  ];
   bookObject: object = {};
 
   submitForm(): void {
@@ -85,34 +112,34 @@ export class EditBookComponent implements OnInit {
     this.gqlQueries.getBookByISBN(this.isbn).then((response: any) => {
       this.title = response.data.book.title;
       this.author = response.data.book.author;
-      this.editor = response.data.book.editor;
       this.lang = response.data.book.lang.code || response.data.book.lang.name;
       this.cover = response.data.book.cover;
       this.schools = response.data.book.availabilities;
       this.format = response.data.book.format;
-      this.currentSchool = response.data.book.availabilities[0].school.slug;
+      this.schools.map((school: any) => {
+        this.currentSchools.push(school.school.slug);
+      });
 
       this.gqlQueries.getBookSelectOptions().then((res: any) => {
-        this.BookFormats = res.data.__type.enumValues;
+        this.bookFormats = res.data.__type.enumValues;
         this.beCodeSchools = res.data.schools.nodes;
 
         this.validateForm.controls.title.setValue(this.title);
         this.validateForm.controls.author.setValue(this.author);
         this.validateForm.controls.bookFormat.setValue(this.format);
-        this.validateForm.controls.bookSchool.setValue(this.currentSchool);
+        this.validateForm.controls.bookSchool.setValue(this.currentSchools);
         this.validateForm.controls.bookLanguage.setValue(this.lang);
         this.validateForm.controls.cover.setValue(this.cover);
       });
+    });
+
+    this.gqlQueries.getCurrentUser().then((user: any) => {
+      console.log(user.data.consumer.owner.name);
+      this.editor = user.data.consumer.owner.name;
     });
   }
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
   }
-
-  /* getBase64(img: File, callback: (img: string) => void): void {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  } */
 }
