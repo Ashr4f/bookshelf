@@ -100,8 +100,10 @@ export const BOOK_QUERY = gql`
           reviewer {
             slug
             uid
+            name
           }
           note
+          comment
         }
       }
       availabilities {
