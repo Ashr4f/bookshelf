@@ -2,24 +2,27 @@
 <div *ngIf="!loading">
   {{ bookData.title }}
 
-  <div *ngIf="BookAvailability">
+  <div *ngIf="BookAvailability && bookInMySchool">
     <p>Available</p>
     <button type="button" (click)="rentCurrentBook()">RENT</button>
   </div>
 
-  <div *ngIf="!BookAvailability">
-    <div *ngIf="bookBorrowerUID === undefined || bookBorrowerUID === ''">
-      Not available, borrowed by: <span>{{ bookBorrowerName }}</span>
-    </div>
-
-    <div *ngIf="bookBorrowerUID !== undefined || bookBorrowerUID !== ''">
-      <div *ngIf="bookBorrowerUID === user.owner.uid"></div>
+  <div *ngIf="BookAvailability === false">
+    <div *ngIf="bookBorrowerUID === user.owner.uid">
       <p>
-        You've borrowed this book, don't forget to return it when you finish
-        reading it please
+        You've borrowed this book, consider returning it when you finish reading
+        it please.
       </p>
       <button type="button" (click)="returnCurrentBook()">RETURN BOOK</button>
     </div>
+
+    <div *ngIf="bookBorrowerUID !== user.owner.uid">
+      Not available, borrowed by: <span>{{ bookBorrowerName }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="bookInMySchool === false">
+    This book isn't available at your school!
   </div>
 
   <nz-rate
@@ -29,5 +32,10 @@
   ></nz-rate>
   <div>
     <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
+  </div>
+  <h4 style="margin-bottom: 16px;">Availabilities:</h4>
+  <div *ngFor="let availability of bookData.availabilities">
+    <nz-tag [nzColor]="'volcano'">volcano</nz-tag>
+    <!-- <nz-tag [nzColor]="'green'">green</nz-tag> -->
   </div>
 </div>
