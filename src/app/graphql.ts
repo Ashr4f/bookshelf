@@ -45,6 +45,13 @@ export const ME_QUERY = gql`
       owner {
         uid
         slug
+        ... on Junior {
+          promo {
+            school {
+              slug
+            }
+          }
+        }
       }
     }
   }
@@ -102,6 +109,15 @@ export const BOOK_QUERY = gql`
           name
           uid
           slug
+
+          bookLendings {
+            book {
+              isbn
+            }
+            school {
+              slug
+            }
+          }
         }
         school {
           slug
@@ -121,6 +137,16 @@ export const BOOK_SELECT_OPTIONS = gql`
         name
       }
     }
+    schools {
+      nodes {
+        slug
+      }
+    }
+  }
+`;
+
+export const BECODE_SCHOOLS_SLUGS = gql`
+  {
     schools {
       nodes {
         slug
@@ -167,6 +193,9 @@ export const RENT_BOOK = gql`
     borrowBook(book: $book, school: $school) {
       isbn
       availabilities {
+        school {
+          slug
+        }
         borrower {
           uid
           name
@@ -207,11 +236,8 @@ export const ADD_BOOK_REVIEW = gql`
       }
       book {
         reviews {
-          edges {
-            cursor
-            node {
-              note
-            }
+          nodes {
+            note
           }
           totalCount
         }
