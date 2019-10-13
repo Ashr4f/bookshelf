@@ -22,7 +22,9 @@ export class ProfileComponent implements OnInit {
   }
 
   returnBook(book: HTMLElement, bookISBN: any) {
-    let confirmReturn = confirm("Are you sure to perform this action?");
+    let confirmReturn = confirm(
+      "Are you sure you want to perform this action?"
+    );
     if (confirmReturn) {
       this.gqlQueries
         .returnBook(bookISBN, this.user.promo.school.slug)
