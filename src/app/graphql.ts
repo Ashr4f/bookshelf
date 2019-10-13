@@ -46,6 +46,17 @@ export const ME_QUERY = gql`
         uid
         slug
         name
+
+        bookLendings {
+          school {
+            name
+          }
+          book {
+            isbn
+            title
+            cover
+          }
+        }
         ... on Junior {
           promo {
             school {
