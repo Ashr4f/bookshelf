@@ -1,7 +1,5 @@
 import { Component } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import gql from "graphql-tag";
-import { BOOK_QUERY, AllBooksQueryResponse } from "./graphql";
 import { AuthService } from "src/app/services/auth.service";
 import { Router } from "@angular/router";
 import { User } from "./profile/profile.interface";
