@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Book } from "../types";
 import { QueriesService } from "src/app/services/gql-queries.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "hn-book-list",
@@ -15,8 +15,11 @@ export class BookListComponent implements OnInit {
   reviewersTotalCount: number;
   allNotes: any[] = [];
   allBookAvailabilities: any[] = [];
+  showAllBooks: boolean = true;
+  showAvailableOnly: boolean = false;
+  showUnAvailableOnly: boolean = false;
 
-  constructor(private gqlQueries: QueriesService) {}
+  constructor(private gqlQueries: QueriesService, private router: Router) {}
 
   ngOnInit() {
     this.gqlQueries.getAllBooks().then((booksData: any) => {
@@ -37,14 +40,14 @@ export class BookListComponent implements OnInit {
 
       for (let i = 0; i < this.allNotes.length; i++) {
         if (this.allNotes[i].length > 0) {
-          let reviewsTotal = 0;
+          let totalReviews = 0;
           this.allBooks[i].reviews.nodes.map((a: any) => {
-            reviewsTotal += a.note;
+            totalReviews += a.note;
           });
 
           this.booksReviews.push(
             Math.round(
-              (reviewsTotal / this.allBooks[i].reviews.totalCount) * 10
+              (totalReviews / this.allBooks[i].reviews.totalCount) * 10
             ) / 10
           );
         } else {
@@ -52,5 +55,37 @@ export class BookListComponent implements OnInit {
         }
       }
     });
+  }
+
+  showAvailable() {
+    console.log("av");
+    this.showAllBooks = false;
+    this.showUnAvailableOnly = false;
+    this.showAvailableOnly = true;
+  }
+
+  showUnavailable() {
+    console.log("unav");
+    this.showAllBooks = false;
+    this.showAvailableOnly = false;
+    this.showUnAvailableOnly = true;
+  }
+
+  showAll() {
+    console.log("all");
+    this.showAvailableOnly = false;
+    this.showUnAvailableOnly = false;
+    this.showAllBooks = true;
+  }
+
+  isValidCoverUrl(element: any) {
+    let coverUrlRegEx = new RegExp(
+      "^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)"
+    );
+
+    if (coverUrlRegEx.test(element)) {
+      return true;
+    }
+    return false;
   }
 }
