@@ -15,11 +15,13 @@ export class BookItemComponent implements OnInit {
   bookData: any;
   isbn: string;
   tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
-  bookReview: number;
-  allBookReviews: any;
+  bookReview: number = 3;
+  allBookReviews: any[] = [];
   bookNotes: number = 0;
   myBookReview: number;
   myBookReviewComment: string = "";
+  hasOwnComment: boolean = false;
+  enableCommentEdit: boolean = false;
   borrower: string;
   bookBorrowerUID: string;
   bookBorrowerSlug: string;
@@ -53,7 +55,6 @@ export class BookItemComponent implements OnInit {
         this.user = userData.data.consumer;
         this.userSchoolSlug = this.user.owner.promo.school.slug;
         this.bookData = bookData.data.book;
-        console.log(this.bookData);
 
         this.gqlQueries
           .getBeCodeSchools()
@@ -97,13 +98,14 @@ export class BookItemComponent implements OnInit {
           let totalReviews = 0;
           this.allBookReviews.map((a: any) => {
             totalReviews += a.note;
+            if (a.reviewer.slug === this.user.owner.slug) {
+              this.hasOwnComment = true;
+            }
           });
           totalReviews =
             Math.round((totalReviews / this.bookData.reviews.totalCount) * 10) /
             10;
           this.bookNotes = totalReviews;
-
-          console.log(this.allBookReviews);
 
           for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
             if (
@@ -156,27 +158,27 @@ export class BookItemComponent implements OnInit {
       });
   }
 
-  sendBookReview() {
-    if (this.myBookReview !== undefined && this.bookReview !== 0) {
-      console.log("edit");
-      this.gqlQueries
-        .editBookReview(
-          this.reviewUID,
-          this.BookReviewInputs[this.bookReview - 1],
-          "",
-          this.myBookReviewComment
-        )
-        .then((res: any) => {
-          this.myBookReview = this.bookReview;
-        })
-        .catch((err: any) => {
-          console.error(err);
-        });
-    }
+  editOwnReview() {
+    this.gqlQueries
+      .editBookReview(
+        this.reviewUID,
+        this.BookReviewInputs[this.bookReview - 1],
+        "",
+        this.myBookReviewComment
+      )
+      .then((res: any) => {
+        this.myBookReview = this.bookReview;
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  }
 
-    if (this.bookReview === 0) {
-      console.log("delete");
-
+  deleteOwnReview() {
+    let deleteConfirmation = confirm(
+      "Are you sure you want to delete your own review?"
+    );
+    if (deleteConfirmation) {
       this.gqlQueries
         .deleteBookReview(this.reviewUID)
         .then((res: any) => {
@@ -186,6 +188,18 @@ export class BookItemComponent implements OnInit {
         .catch((err: any) => {
           console.error(err);
         });
+    }
+  }
+
+  sendBookReview(isComment: boolean) {
+    if (this.myBookReview !== undefined && this.bookReview !== 0) {
+      console.log("edit");
+      this.editOwnReview();
+    }
+
+    if (this.bookReview === 0) {
+      console.log("delete");
+      this.deleteOwnReview();
     }
 
     if (this.myBookReview === undefined) {
@@ -200,7 +214,9 @@ export class BookItemComponent implements OnInit {
         )
         .then((res: any) => {
           this.myBookReview = this.bookReview;
+          this.hasOwnComment = true;
           this.reviewUID = res.data.addBookReview.uid;
+          this.allBookReviews.push(res.data.addBookReview);
         })
         .catch((err: any) => {
           console.error(err);

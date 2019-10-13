@@ -249,17 +249,15 @@ export const ADD_BOOK_REVIEW = gql`
   ) {
     addBookReview(bookISBN: $bookISBN, review: $review) {
       note
+      comment
+      createdAt {
+        iso {
+          datetime
+        }
+      }
       reviewer {
         name
         slug
-      }
-      book {
-        reviews {
-          nodes {
-            note
-          }
-          totalCount
-        }
       }
       uid
     }

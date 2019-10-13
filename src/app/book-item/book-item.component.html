@@ -54,14 +54,6 @@
   </div>
 
   <div>
-    <span>My rating: </span>
-    <nz-rate
-      [(ngModel)]="bookReview"
-      [nzTooltips]="tooltips"
-      (ngModelChange)="sendBookReview()"
-    ></nz-rate>
-  </div>
-  <div>
     <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
   </div>
 
@@ -81,16 +73,23 @@
     }}</nz-tag>
   </div>
 
-  <div class="comments-section">
+  <div *ngIf="allBookReviews.length > 0" class="comments-section">
     <h4>Reviews:</h4>
     <div class="comment-container" *ngFor="let review of allBookReviews">
-      <ng-container *ngIf="review.comment.length > 0">
-        <div class="reviewer-rate">
+      <ng-container *ngIf="review.comment && review.comment.length > 0">
+        <div *ngIf="!enableCommentEdit" class="reviewer-rate">
           <nz-rate
             [(ngModel)]="review.note"
             [nzTooltips]="tooltips"
-            nzAllowHalf
+            [nzAllowClear]="false"
             nzDisabled
+          ></nz-rate>
+        </div>
+        <div *ngIf="enableCommentEdit" class="reviewer-rate">
+          <nz-rate
+            [(ngModel)]="bookReview"
+            [nzTooltips]="tooltips"
+            [nzAllowClear]="false"
           ></nz-rate>
         </div>
         <nz-comment
@@ -103,38 +102,109 @@
             nzIcon="user"
           ></nz-avatar>
           <nz-comment-content>
-            <p>
+            <p *ngIf="!enableCommentEdit">
               {{ review.comment }}
             </p>
+            <ng-container *ngIf="hasOwnComment && enableCommentEdit">
+              <nz-form-item>
+                <textarea [(ngModel)]="commentInputField" nz-input rows="2">
+                </textarea>
+              </nz-form-item>
+              <nz-form-item>
+                <button
+                  nz-button
+                  nzType="primary"
+                  [nzLoading]="submitting"
+                  [disabled]="!commentInputField"
+                  (click)="editOwnReview()"
+                >
+                  Edit
+                </button>
+                <button
+                  style="margin-left: 12px;"
+                  nz-button
+                  [nzLoading]="canceling"
+                  (click)="enableCommentEdit = false"
+                >
+                  Cancel
+                </button>
+              </nz-form-item>
+            </ng-container>
           </nz-comment-content>
+          <ng-container *ngIf="hasOwnComment">
+            <nz-comment-action>
+              <div
+                *ngIf="!enableCommentEdit"
+                style="margin-right: 8px"
+                (click)="
+                  enableCommentEdit = true; commentInputField = review.comment
+                "
+                nz-tooltip
+                nzTitle="Edit"
+              >
+                <i nz-icon nzType="edit"></i>
+                <span class="secondary"> Edit </span>
+              </div>
+            </nz-comment-action>
+
+            <nz-comment-action>
+              <div
+                *ngIf="!enableCommentEdit"
+                (click)="deleteOwnReview()"
+                nz-tooltip
+                nzTitle="Delete"
+              >
+                <i
+                  nz-icon
+                  nzType="delete"
+                  [nzTheme]="'twotone'"
+                  [nzTwotoneColor]="'red'"
+                ></i>
+                <span nz-text nzType="danger"> Delete </span>
+              </div>
+            </nz-comment-action>
+          </ng-container>
         </nz-comment>
       </ng-container>
     </div>
   </div>
 
-  <nz-comment>
-    <nz-avatar nz-comment-avatar [nzShape]="'square'" nzIcon="user"></nz-avatar>
-    <nz-comment-content>
-      <nz-form-item>
-        <textarea
-          [(ngModel)]="myBookReviewComment"
-          nz-input
-          rows="4"
-        ></textarea>
-      </nz-form-item>
-      <nz-form-item>
-        <button
-          nz-button
-          nzType="primary"
-          [nzLoading]="submitting"
-          [disabled]="!myBookReviewComment"
-          (click)="sendBookReview()"
-        >
-          Add Comment
-        </button>
-      </nz-form-item>
-    </nz-comment-content>
-  </nz-comment>
-
-  Don't forget to push your review to allBookReviews when you comment
+  <ng-container *ngIf="!hasOwnComment">
+    <div>
+      <span>Your rate: </span>
+      <nz-rate
+        [(ngModel)]="bookReview"
+        [nzTooltips]="tooltips"
+        [nzAllowClear]="false"
+        (ngModelChange)="sendBookReview(false)"
+      ></nz-rate>
+    </div>
+    <nz-comment>
+      <nz-avatar
+        nz-comment-avatar
+        [nzShape]="'square'"
+        nzIcon="user"
+      ></nz-avatar>
+      <nz-comment-content>
+        <nz-form-item>
+          <textarea
+            [(ngModel)]="myBookReviewComment"
+            nz-input
+            rows="4"
+          ></textarea>
+        </nz-form-item>
+        <nz-form-item>
+          <button
+            nz-button
+            nzType="primary"
+            [nzLoading]="submitting"
+            [disabled]="!myBookReviewComment && !bookReview"
+            (click)="sendBookReview(true)"
+          >
+            Add review
+          </button>
+        </nz-form-item>
+      </nz-comment-content>
+    </nz-comment>
+  </ng-container>
 </div>
