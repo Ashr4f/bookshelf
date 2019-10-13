@@ -84,29 +84,31 @@
   <div class="comments-section">
     <h4>Reviews:</h4>
     <div class="comment-container" *ngFor="let review of allBookReviews">
-      <div class="reviewer-rate">
-        <nz-rate
-          [(ngModel)]="review.note"
-          [nzTooltips]="tooltips"
-          nzAllowHalf
-          nzDisabled
-        ></nz-rate>
-      </div>
-      <nz-comment
-        nzAuthor="{{ review.reviewer.name }}"
-        [nzDatetime]="formatCommentDate(review.createdAt.iso.datetime)"
-      >
-        <nz-avatar
-          nz-comment-avatar
-          [nzShape]="'square'"
-          nzIcon="user"
-        ></nz-avatar>
-        <nz-comment-content>
-          <p>
-            {{ review.comment }}
-          </p>
-        </nz-comment-content>
-      </nz-comment>
+      <ng-container *ngIf="review.comment.length > 0">
+        <div class="reviewer-rate">
+          <nz-rate
+            [(ngModel)]="review.note"
+            [nzTooltips]="tooltips"
+            nzAllowHalf
+            nzDisabled
+          ></nz-rate>
+        </div>
+        <nz-comment
+          nzAuthor="{{ review.reviewer.name }}"
+          [nzDatetime]="formatCommentDate(review.createdAt.iso.datetime)"
+        >
+          <nz-avatar
+            nz-comment-avatar
+            [nzShape]="'square'"
+            nzIcon="user"
+          ></nz-avatar>
+          <nz-comment-content>
+            <p>
+              {{ review.comment }}
+            </p>
+          </nz-comment-content>
+        </nz-comment>
+      </ng-container>
     </div>
   </div>
 
@@ -114,15 +116,19 @@
     <nz-avatar nz-comment-avatar [nzShape]="'square'" nzIcon="user"></nz-avatar>
     <nz-comment-content>
       <nz-form-item>
-        <textarea [(ngModel)]="inputValue" nz-input rows="4"></textarea>
+        <textarea
+          [(ngModel)]="myBookReviewComment"
+          nz-input
+          rows="4"
+        ></textarea>
       </nz-form-item>
       <nz-form-item>
         <button
           nz-button
           nzType="primary"
           [nzLoading]="submitting"
-          [disabled]="!inputValue"
-          (click)="handleSubmit()"
+          [disabled]="!myBookReviewComment"
+          (click)="sendBookReview()"
         >
           Add Comment
         </button>

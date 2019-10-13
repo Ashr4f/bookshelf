@@ -19,6 +19,7 @@ export class BookItemComponent implements OnInit {
   allBookReviews: any;
   bookNotes: number = 0;
   myBookReview: number;
+  myBookReviewComment: string = "";
   borrower: string;
   bookBorrowerUID: string;
   bookBorrowerSlug: string;
@@ -93,14 +94,14 @@ export class BookItemComponent implements OnInit {
 
         if (this.bookData.reviews.nodes.length > 0) {
           this.allBookReviews = this.bookData.reviews.nodes;
-          let reviewsTotal = 0;
+          let totalReviews = 0;
           this.allBookReviews.map((a: any) => {
-            reviewsTotal += a.note;
+            totalReviews += a.note;
           });
-          reviewsTotal =
-            Math.round((reviewsTotal / this.bookData.reviews.totalCount) * 10) /
+          totalReviews =
+            Math.round((totalReviews / this.bookData.reviews.totalCount) * 10) /
             10;
-          this.bookNotes = reviewsTotal;
+          this.bookNotes = totalReviews;
 
           console.log(this.allBookReviews);
 
@@ -163,7 +164,7 @@ export class BookItemComponent implements OnInit {
           this.reviewUID,
           this.BookReviewInputs[this.bookReview - 1],
           "",
-          ""
+          this.myBookReviewComment
         )
         .then((res: any) => {
           this.myBookReview = this.bookReview;
@@ -179,6 +180,7 @@ export class BookItemComponent implements OnInit {
       this.gqlQueries
         .deleteBookReview(this.reviewUID)
         .then((res: any) => {
+          this.myBookReviewComment = "";
           this.myBookReview = undefined;
         })
         .catch((err: any) => {
@@ -194,7 +196,7 @@ export class BookItemComponent implements OnInit {
           this.isbn,
           this.BookReviewInputs[this.bookReview - 1],
           "",
-          ""
+          this.myBookReviewComment
         )
         .then((res: any) => {
           this.myBookReview = this.bookReview;
