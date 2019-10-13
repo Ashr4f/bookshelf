@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import gql from "graphql-tag";
-import { AuthService } from "src/app/services/auth.service";
-import { Router } from "@angular/router";
-import { User } from "../profile/profile.interface";
+import { QueriesService } from "../services/gql-queries.service";
 
 @Component({
   selector: "app-profile",
@@ -11,11 +8,38 @@ import { User } from "../profile/profile.interface";
   styleUrls: ["./profile.component.scss"]
 })
 export class ProfileComponent implements OnInit {
-  constructor(
-    public apollo: Apollo,
-    private router: Router,
-    private auth: AuthService
-  ) {}
+  loading: boolean = true;
+  user: any = {};
 
-  ngOnInit() {}
+  constructor(public apollo: Apollo, private gqlQueries: QueriesService) {}
+
+  ngOnInit() {
+    this.gqlQueries.getCurrentUser().then((res: any) => {
+      this.user = res.data.consumer.owner;
+      console.log(this.user);
+      this.loading = res.loading;
+    });
+  }
+
+  returnBook(book: HTMLElement, bookISBN: any) {
+    let confirmReturn = confirm("Are you sure to perform this action?");
+    if (confirmReturn) {
+      this.gqlQueries
+        .returnBook(bookISBN, this.user.promo.school.slug)
+        .then((res: any) => {
+          book.parentNode.removeChild(book);
+        });
+    }
+  }
+
+  isValidCoverUrl(element: any) {
+    let coverUrlRegEx = new RegExp(
+      "^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)"
+    );
+
+    if (coverUrlRegEx.test(element)) {
+      return true;
+    }
+    return false;
+  }
 }
