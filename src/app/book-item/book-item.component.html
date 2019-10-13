@@ -77,7 +77,14 @@
     <h4>Reviews:</h4>
     <div class="comment-container" *ngFor="let review of allBookReviews">
       <ng-container *ngIf="review.comment && review.comment.length > 0">
-        <div *ngIf="!enableCommentEdit" class="reviewer-rate">
+        <div
+          *ngIf="
+            (!enableCommentEdit && review.reviewer.slug !== user.owner.slug) ||
+            (enableCommentEdit && review.reviewer.slug !== user.owner.slug) ||
+            (!enableCommentEdit && review.reviewer.slug === user.owner.slug)
+          "
+          class="reviewer-rate"
+        >
           <nz-rate
             [(ngModel)]="review.note"
             [nzTooltips]="tooltips"
@@ -85,13 +92,18 @@
             nzDisabled
           ></nz-rate>
         </div>
-        <div *ngIf="enableCommentEdit" class="reviewer-rate">
+
+        <div
+          *ngIf="enableCommentEdit && review.reviewer.slug === user.owner.slug"
+          class="reviewer-rate"
+        >
           <nz-rate
             [(ngModel)]="bookReview"
             [nzTooltips]="tooltips"
             [nzAllowClear]="false"
           ></nz-rate>
         </div>
+
         <nz-comment
           nzAuthor="{{ review.reviewer.name }}"
           [nzDatetime]="formatCommentDate(review.createdAt.iso.datetime)"
@@ -102,12 +114,29 @@
             nzIcon="user"
           ></nz-avatar>
           <nz-comment-content>
-            <p *ngIf="!enableCommentEdit">
+            <p
+              *ngIf="
+                (!enableCommentEdit &&
+                  review.reviewer.slug !== user.owner.slug) ||
+                (enableCommentEdit && review.reviewer.slug !== user.owner.slug)
+              "
+            >
               {{ review.comment }}
             </p>
-            <ng-container *ngIf="hasOwnComment && enableCommentEdit">
+            <p
+              *ngIf="
+                !enableCommentEdit && review.reviewer.slug === user.owner.slug
+              "
+            >
+              {{ review.comment }}
+            </p>
+            <ng-container
+              *ngIf="
+                review.reviewer.slug === user.owner.slug && enableCommentEdit
+              "
+            >
               <nz-form-item>
-                <textarea [(ngModel)]="commentInputField" nz-input rows="2">
+                <textarea [(ngModel)]="myBookReviewComment" nz-input rows="2">
                 </textarea>
               </nz-form-item>
               <nz-form-item>
@@ -115,8 +144,12 @@
                   nz-button
                   nzType="primary"
                   [nzLoading]="submitting"
-                  [disabled]="!commentInputField"
-                  (click)="editOwnReview()"
+                  [disabled]="!myBookReviewComment"
+                  (click)="
+                    editOwnReview();
+                    enableCommentEdit = false;
+                    review.comment = myBookReviewComment
+                  "
                 >
                   Edit
                 </button>
@@ -131,13 +164,13 @@
               </nz-form-item>
             </ng-container>
           </nz-comment-content>
-          <ng-container *ngIf="hasOwnComment">
+          <ng-container *ngIf="review.reviewer.slug === user.owner.slug">
             <nz-comment-action>
               <div
                 *ngIf="!enableCommentEdit"
                 style="margin-right: 8px"
                 (click)="
-                  enableCommentEdit = true; commentInputField = review.comment
+                  enableCommentEdit = true; myBookReviewComment = review.comment
                 "
                 nz-tooltip
                 nzTitle="Edit"
@@ -169,14 +202,13 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!hasOwnComment">
+  <ng-container *ngIf="!hasOwnReview">
     <div>
       <span>Your rate: </span>
       <nz-rate
         [(ngModel)]="bookReview"
         [nzTooltips]="tooltips"
         [nzAllowClear]="false"
-        (ngModelChange)="sendBookReview(false)"
       ></nz-rate>
     </div>
     <nz-comment>
@@ -199,7 +231,7 @@
             nzType="primary"
             [nzLoading]="submitting"
             [disabled]="!myBookReviewComment && !bookReview"
-            (click)="sendBookReview(true)"
+            (click)="addOwnReview()"
           >
             Add review
           </button>
