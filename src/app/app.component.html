@@ -1,10 +1,23 @@
 <div class="container">
-  <a routerLink="/" routerLinkActive="active">Main <br /></a>
-  <a routerLink="/login" routerLinkActive="active">Login <br /></a>
-  <a routerLink="/register" routerLinkActive="active">Register <br /></a>
-  <a routerLink="/books/create" routerLinkActive="active">Create Book <br /></a>
-  <a routerLink="/books" routerLinkActive="active">Show all books <br /></a>
-  <a routerLink="/profile" routerLinkActive="active">Profile <br /></a>
-  <button (click)="logout()">LOGOUT</button>
+  <p *ngIf="loading"></p>
+  <ng-container *ngIf="!loading">
+    <a routerLink="/" routerLinkActive="active">Main <br /></a>
+    <a *ngIf="!user" routerLink="/login" routerLinkActive="active"
+      >Login <br
+    /></a>
+    <a *ngIf="!user" routerLink="/register" routerLinkActive="active"
+      >Register <br
+    /></a>
+    <a *ngIf="user" routerLink="/books/create" routerLinkActive="active"
+      >Create Book <br
+    /></a>
+    <a *ngIf="user" routerLink="/books" routerLinkActive="active"
+      >Show all books <br
+    /></a>
+    <a *ngIf="user" routerLink="/profile" routerLinkActive="active"
+      >Profile <br
+    /></a>
+    <button *ngIf="user" (click)="logout()">LOGOUT</button>
+  </ng-container>
   <router-outlet></router-outlet>
 </div>

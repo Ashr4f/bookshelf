@@ -20,6 +20,7 @@ type Response = {
 export class AppComponent {
   title = "bookshelf";
   user: any;
+  loading: boolean = true;
 
   constructor(
     public apollo: Apollo,
@@ -30,6 +31,7 @@ export class AppComponent {
       if (data !== null && data !== undefined) {
         this.user = data.consumer;
       }
+      this.loading = false;
     });
   }
   ngOnInit() {
