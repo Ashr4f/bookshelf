@@ -27,10 +27,7 @@ export class AuthService {
   logout() {
     this.updateStateSession(false);
     localStorage.removeItem("token");
-    const currentRouter = this.router.url;
-    if (currentRouter !== "/register") {
-      this.router.navigate(["/login"]);
-    }
+    window.location.href = "/login";
   }
 
   private sincroValues(result: User, state: boolean) {
