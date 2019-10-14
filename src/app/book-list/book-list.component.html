@@ -1,5 +1,5 @@
 <h4 *ngIf="loading">Loading...</h4>
-<div *ngIf="!loading" class="books-container">
+<!-- <div *ngIf="!loading" class="books-container">
   <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="availibilitiesMenu">
     Filter
     <i nz-icon nzType="down"></i>
@@ -71,4 +71,32 @@
       showUnAvailable
     </ng-container>
   </div>
+</div> -->
+<div *ngIf="!loading" class="books-container">
+  <article class="book-container">
+    <div class="book-content">
+      <div class="book-cover-container">
+        <img src="" alt="book cover" />
+      </div>
+      <div class="book-heading">
+        <div class="book-title">
+          <h3>Title</h3>
+        </div>
+        <div class="book-rating">
+          Rating here
+        </div>
+      </div>
+      <div class="book-body">
+        <div class="book-author">
+          <p>By <span class="book-author-name">Author</span></p>
+        </div>
+        <div class="available-at">
+          <ul class="schools">
+            Schools:
+            <li class="school">School</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
 </div>
