@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "apollo-client/util/Observable";
 import { Apollo } from "apollo-angular";
 import { QueriesService } from "src/app/services/gql-queries.service";
+import { formatDistance } from "date-fns";
 
 @Component({
   selector: "hn-book-item",
@@ -14,8 +15,13 @@ export class BookItemComponent implements OnInit {
   bookData: any;
   isbn: string;
   tooltips = ["terrible", "bad", "normal", "good", "wonderful"];
-  bookReview: number;
+  bookReview: number = 3;
+  allBookReviews: any[] = [];
+  bookNotes: number = 0;
   myBookReview: number;
+  myBookReviewComment: string = "";
+  hasOwnReview: boolean = false;
+  enableCommentEdit: boolean = false;
   borrower: string;
   bookBorrowerUID: string;
   bookBorrowerSlug: string;
@@ -88,6 +94,22 @@ export class BookItemComponent implements OnInit {
           });
 
         if (this.bookData.reviews.nodes.length > 0) {
+          this.allBookReviews = this.bookData.reviews.nodes;
+          let totalReviews = 0;
+          this.allBookReviews.map((a: any) => {
+            totalReviews += a.note;
+            if (
+              a.reviewer.slug === this.user.owner.slug &&
+              a.comment.length > 0
+            ) {
+              this.hasOwnReview = true;
+            }
+          });
+          totalReviews =
+            Math.round((totalReviews / this.bookData.reviews.totalCount) * 10) /
+            10;
+          this.bookNotes = totalReviews;
+
           for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
             if (
               this.user.owner.uid ===
@@ -139,54 +161,76 @@ export class BookItemComponent implements OnInit {
       });
   }
 
-  sendBookReview() {
-    if (this.myBookReview !== undefined && this.bookReview !== 0) {
-      console.log("edit");
-      this.gqlQueries
-        .editBookReview(
-          this.reviewUID,
-          this.BookReviewInputs[this.bookReview - 1],
-          "",
-          ""
-        )
-        .then((res: any) => {
-          this.myBookReview = this.bookReview;
-        })
-        .catch((err: any) => {
-          console.error(err);
-        });
-    }
+  addOwnReview() {
+    this.gqlQueries
+      .addBookReview(
+        this.isbn,
+        this.BookReviewInputs[this.bookReview - 1],
+        "",
+        this.myBookReviewComment
+      )
+      .then((res: any) => {
+        this.myBookReview = this.bookReview;
+        this.hasOwnReview = true;
+        this.reviewUID = res.data.addBookReview.uid;
+        this.allBookReviews.push(res.data.addBookReview);
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  }
 
-    if (this.bookReview === 0) {
-      console.log("delete");
+  editOwnReview() {
+    this.gqlQueries
+      .editBookReview(
+        this.reviewUID,
+        this.BookReviewInputs[this.bookReview - 1],
+        "",
+        this.myBookReviewComment
+      )
+      .then((res: any) => {
+        this.myBookReview = this.bookReview;
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  }
 
+  deleteOwnReview() {
+    let deleteConfirmation = confirm(
+      "Are you sure you want to delete your own review?"
+    );
+    if (deleteConfirmation) {
       this.gqlQueries
         .deleteBookReview(this.reviewUID)
         .then((res: any) => {
+          this.myBookReviewComment = undefined;
           this.myBookReview = undefined;
         })
         .catch((err: any) => {
           console.error(err);
         });
     }
+  }
+
+  /*   sendBookReview() {
+    if (this.myBookReview !== undefined && this.bookReview !== 0) {
+      console.log("edit");
+      this.editOwnReview();
+    }
+
+    if (this.bookReview === 0) {
+      console.log("delete");
+      this.deleteOwnReview();
+    }
 
     if (this.myBookReview === undefined) {
       console.log("add");
 
-      this.gqlQueries
-        .addBookReview(
-          this.isbn,
-          this.BookReviewInputs[this.bookReview - 1],
-          "",
-          ""
-        )
-        .then((res: any) => {
-          this.myBookReview = this.bookReview;
-          this.reviewUID = res.data.addBookReview.uid;
-        })
-        .catch((err: any) => {
-          console.error(err);
-        });
     }
+  }
+ */
+  formatCommentDate(commentDate: any) {
+    return formatDistance(new Date(), new Date(commentDate));
   }
 }

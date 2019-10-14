@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ADD_BOOK_MUTATION } from "../graphql";
 import { QueriesService } from "../services/gql-queries.service";
 import { Router } from "@angular/router";
 
@@ -15,6 +14,9 @@ export class CreateBookComponent implements OnInit {
   bookExists: Boolean = false;
   CreateBookErrorMessage: string;
 
+  coverLoading = false;
+  coverUrl: string;
+
   isbn: string = "";
   title: string = "";
   author: string = "";
@@ -24,7 +26,33 @@ export class CreateBookComponent implements OnInit {
   schools: [string] = [""];
   beCodeSchools: [string] = [""];
   format: string = "";
-  BookFormats: [] = [];
+  bookFormats: [] = [];
+  bookLanguages: any[] = [
+    {
+      code: "en",
+      name: "English"
+    },
+    {
+      code: "fr",
+      name: "Français"
+    },
+    {
+      code: "nl",
+      name: "Dutch"
+    },
+    {
+      code: "de",
+      name: "Deutsche"
+    },
+    {
+      code: "tr",
+      name: "Türkçe"
+    },
+    {
+      code: "ar",
+      name: "العربية"
+    }
+  ];
   constructor(
     public apollo: Apollo,
     private fb: FormBuilder,
@@ -40,11 +68,17 @@ export class CreateBookComponent implements OnInit {
       bookFormat: [null, [Validators.required]],
       bookSchool: [null, [Validators.required]],
       bookLanguage: [null, [Validators.required]],
-      cover: [null, [Validators.required]]
+      cover: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern("^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)")
+        ]
+      ]
     });
 
     this.gqlQueries.getBookSelectOptions().then((response: any) => {
-      this.BookFormats = response.data.__type.enumValues;
+      this.bookFormats = response.data.__type.enumValues;
       this.beCodeSchools = response.data.schools.nodes;
     });
   }

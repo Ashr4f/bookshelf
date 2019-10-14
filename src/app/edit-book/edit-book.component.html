@@ -1,43 +1,3 @@
-<!-- <form action="javascript:;" (submit)="editCurrentBook()">
-  <input
-    class="mb2"
-    [(ngModel)]="title"
-    type="text"
-    name="title"
-    placeholder="The book name"
-  />
-  <input
-    class="mb2"
-    [(ngModel)]="author"
-    name="author"
-    type="text"
-    placeholder="The author of the book"
-  />
-  <select name="BookFormats" [(ngModel)]="format"
-    ><option selected hidden disabled value="{{ format.name }}">{{
-      format.name
-    }}</option>
-    <option *ngFor="let format of BookFormats" value="{{ format.name }}">{{
-      format.name
-    }}</option>
-  </select>
-
-  <select
-    style="text-transform: uppercase;"
-    name="Schools"
-    [(ngModel)]="schools"
-    ><option selected hidden disabled value="{{ currentSchool }}">{{
-      currentSchool
-    }}</option>
-    <option *ngFor="let school of beCodeSchools" value="{{ school.slug }}">{{
-      school.slug
-    }}</option>
-  </select>
-  <button type="submit">
-    Submit
-  </button>
-</form> -->
-
 <form
   nz-form
   [formGroup]="validateForm"
@@ -45,7 +5,7 @@
   (ngSubmit)="submitForm()"
 >
   <nz-form-item>
-    <nz-form-control nzErrorTip="Please insert the book title!">
+    <nz-form-control nzErrorTip="Please insert the book's title!">
       <nz-input-group nzPrefixIcon="book">
         <input
           nz-input
@@ -73,13 +33,13 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-control nzErrorTip="Please insert a url to the book's cover">
+    <nz-form-control nzErrorTip="Please insert an image url">
       <nz-input-group nzPrefixIcon="link">
         <input
           nz-input
           formControlName="cover"
           type="text"
-          placeholder="The book's cover URL"
+          placeholder="The book's cover image URL"
           value="{{ cover }}"
         />
       </nz-input-group>
@@ -87,29 +47,32 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-control nzErrorTip="Please insert the book's language!">
+    <nz-form-control nzErrorTip="Please choose the book's language!">
       <nz-select
         formControlName="bookLanguage"
         nzAllowClear
-        nzPlaceHolder="BOOK LANGUAGE"
+        nzPlaceHolder="BOOK'S LANGUAGE"
         nzShowSearch
       >
-        <nz-option nzValue="fr" nzLabel="French"></nz-option>
-        <nz-option nzValue="en" nzLabel="English"></nz-option>
+        <nz-option
+          *ngFor="let language of bookLanguages"
+          nzValue="{{ language.code }}"
+          nzLabel="{{ language.name }}"
+        ></nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-control nzErrorTip="Please choose the book format">
+    <nz-form-control nzErrorTip="Please choose the book's format">
       <nz-select
         formControlName="bookFormat"
         nzAllowClear
         nzShowSearch
-        nzPlaceHolder="{{ format }}"
+        nzPlaceHolder="BOOK'S FORMAT"
       >
         <nz-option
-          *ngFor="let format of BookFormats"
+          *ngFor="let format of bookFormats"
           nzValue="{{ format.name }}"
           nzLabel="{{ format.name }}"
         ></nz-option>
@@ -118,18 +81,19 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-control nzErrorTip="Please choose the book location">
+    <nz-form-control nzErrorTip="Please choose the book's school(s)">
       <nz-select
-        formControlName="bookSchool"
+        nzMode="multiple"
         nzAllowClear
-        nzShowSearch
-        nzPlaceHolder="{{ currentSchool }}"
+        nzPlaceHolder="SCHOOLS"
+        formControlName="bookSchool"
       >
         <nz-option
           *ngFor="let school of beCodeSchools"
           nzValue="{{ school.slug }}"
           nzLabel="{{ school.slug }}"
-        ></nz-option>
+        >
+        </nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>

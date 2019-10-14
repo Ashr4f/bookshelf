@@ -45,6 +45,18 @@ export const ME_QUERY = gql`
       owner {
         uid
         slug
+        name
+
+        bookLendings {
+          school {
+            name
+          }
+          book {
+            isbn
+            title
+            cover
+          }
+        }
         ... on Junior {
           promo {
             school {
@@ -96,11 +108,18 @@ export const BOOK_QUERY = gql`
         totalCount
         nodes {
           uid
+          createdAt {
+            iso {
+              datetime
+            }
+          }
           reviewer {
             slug
             uid
+            name
           }
           note
+          comment
         }
       }
       availabilities {
@@ -230,17 +249,15 @@ export const ADD_BOOK_REVIEW = gql`
   ) {
     addBookReview(bookISBN: $bookISBN, review: $review) {
       note
+      comment
+      createdAt {
+        iso {
+          datetime
+        }
+      }
       reviewer {
         name
         slug
-      }
-      book {
-        reviews {
-          nodes {
-            note
-          }
-          totalCount
-        }
       }
       uid
     }

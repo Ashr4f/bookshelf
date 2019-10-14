@@ -1,3 +1,47 @@
-<ng-container>
-  <p>test</p>
+<div *ngIf="loading">Loading...</div>
+<ng-container *ngIf="!loading">
+  <div>
+    <h3>
+      Hello
+      <b>{{ user.name }}</b>
+    </h3>
+  </div>
+  <h2>Rented books:</h2>
+  <div class="books-container">
+    <div class="book" *ngFor="let lentBook of user.bookLendings">
+      <div class="book-content">
+        <nz-card [nzCover]="coverTemplate">
+          <nz-card-meta
+            nzTitle="{{ lentBook.book.author }}"
+            nzDescription="{{ lentBook.book.title }}"
+          ></nz-card-meta>
+          <a routerLink="/books/{{ lentBook.book.isbn }}">VIEW</a>
+          <br />
+          <button
+            (click)="
+              returnBook(returnBookButton.closest('.book'), lentBook.book.isbn)
+            "
+            #returnBookButton
+          >
+            RETURN
+          </button>
+        </nz-card>
+        <ng-template #coverTemplate>
+          <img
+            src="{{
+              isValidCoverUrl(lentBook.book.cover)
+                ? lentBook.book.cover
+                : '../assets/images/book-cover-placeholder.png'
+            }}"
+            alt="Book Cover"
+            #bookCover
+            (error)="
+              bookCover.onerror = null;
+              bookCover.src = '../assets/images/book-cover-placeholder.png'
+            "
+          />
+        </ng-template>
+      </div>
+    </div>
+  </div>
 </ng-container>
