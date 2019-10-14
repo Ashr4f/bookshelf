@@ -9,13 +9,13 @@ import { CreateBookComponent } from "./create-book/create-book.component";
 import { BookListComponent } from "./book-list/book-list.component";
 import { BookItemComponent } from "./book-item/book-item.component";
 import { EditBookComponent } from "./edit-book/edit-book.component";
+import { HomeComponent } from "./home/home.component";
+import { NotFoundComponent } from "./not-found/not-found.component";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "",
-    pathMatch: "full",
-    canActivate: [AuthGuardsService]
+    component: HomeComponent
   },
   {
     path: "profile",
@@ -46,7 +46,8 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: ""
+    component: NotFoundComponent,
+    canActivate: [AuthGuardsService]
   }
 ];
 

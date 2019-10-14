@@ -21,6 +21,8 @@ import { BookListComponent } from "./book-list/book-list.component";
 import { CreateBookComponent } from "./create-book/create-book.component";
 import { EditBookComponent } from "./edit-book/edit-book.component";
 import { ProfileComponent } from "./profile/profile.component";
+import { NotFoundComponent } from './not-found/not-found.component';
+import { HomeComponent } from './home/home.component';
 
 registerLocaleData(en);
 
@@ -33,7 +35,9 @@ registerLocaleData(en);
     BookListComponent,
     CreateBookComponent,
     EditBookComponent,
-    ProfileComponent
+    ProfileComponent,
+    NotFoundComponent,
+    HomeComponent
   ],
   imports: [
     HttpLinkModule,
