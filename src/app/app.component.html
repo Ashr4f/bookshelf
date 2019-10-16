@@ -1,23 +1,110 @@
-<div class="container">
-  <p *ngIf="loading"></p>
-  <ng-container *ngIf="!loading">
-    <a routerLink="/" routerLinkActive="active">Main <br /></a>
-    <a *ngIf="!user" routerLink="/login" routerLinkActive="active"
-      >Login <br
-    /></a>
-    <a *ngIf="!user" routerLink="/register" routerLinkActive="active"
-      >Register <br
-    /></a>
-    <a *ngIf="user" routerLink="/books/create" routerLinkActive="active"
-      >Create Book <br
-    /></a>
-    <a *ngIf="user" routerLink="/books" routerLinkActive="active"
-      >Show all books <br
-    /></a>
-    <a *ngIf="user" routerLink="/profile" routerLinkActive="active"
-      >Profile <br
-    /></a>
-    <button *ngIf="user" (click)="logout()">LOGOUT</button>
-  </ng-container>
-  <router-outlet></router-outlet>
-</div>
+<p *ngIf="loading"></p>
+<ng-container *ngIf="!loading">
+  <div class="header-container main-box-shadow">
+    <div class="container">
+      <div class="header clearfix">
+        <nav class="main-menu">
+          <ul>
+            <li
+              class="home-link"
+              routerLink="/"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <span>
+                <i nz-icon [nzType]="'home'"></i>
+              </span>
+            </li>
+            <li *ngIf="!user" routerLink="/login" routerLinkActive="active">
+              <span>Login</span>
+            </li>
+            <li *ngIf="!user" routerLink="/register" routerLinkActive="active">
+              <span>Register</span>
+            </li>
+            <li
+              *ngIf="user"
+              class="create-book-link"
+              routerLink="/books/create"
+              routerLinkActive="active hide"
+              title="Add a book"
+            >
+              <span><i nz-icon [nzType]="'plus'"></i></span>
+            </li>
+            <li
+              *ngIf="user"
+              routerLink="/books"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <span>Library</span>
+            </li>
+            <li *ngIf="user" routerLink="/profile" routerLinkActive="active">
+              <span>Profile</span>
+            </li>
+          </ul>
+        </nav>
+        <div
+          *ngIf="user"
+          class="search-bar"
+          (click)="clickedInsideSearchBar($event)"
+          [ngClass]="showSearchResults && searchBarInput ? 'show-results' : ''"
+        >
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input
+              type="text"
+              [(ngModel)]="searchBarInput"
+              (keyup)="searchBarInput && booksSearch(searchBarInput)"
+              (click)="closeSearchResults = false"
+              nz-input
+              placeholder="Search for a book"
+            />
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <i nz-icon nzType="search"></i>
+          </ng-template>
+          <div
+            *ngIf="
+              showSearchResults &&
+              searchBarInput &&
+              !closeSearchResults &&
+              searchBarInput.trim() !== ''
+            "
+            class="search-bar-results"
+          >
+            <ul>
+              <li
+                class="clearfix"
+                *ngFor="let searchBook of searchResults"
+                (click)="closeSearchResults = true"
+                routerLink="books/{{ searchBook.isbn }}"
+              >
+                <div class="thumbnail">
+                  <img
+                    src="{{
+                      isValidCoverUrl(searchBook.cover)
+                        ? searchBook.cover
+                        : '../assets/images/book-cover-placeholder.jpg'
+                    }}"
+                    alt="Book Cover"
+                    #searchResultsBookCover
+                    (error)="
+                      searchResultsBookCover.onerror = null;
+                      searchResultsBookCover.src =
+                        '../assets/images/book-cover-placeholder.jpg'
+                    "
+                  />
+                </div>
+                <div class="book-infos">
+                  <h4>{{ searchBook.title }}</h4>
+                  <span>{{ searchBook.author }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<router-outlet></router-outlet>
