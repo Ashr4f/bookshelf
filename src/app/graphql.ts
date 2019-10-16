@@ -58,6 +58,7 @@ export const ME_QUERY = gql`
           }
         }
         ... on Junior {
+          avatar
           promo {
             school {
               slug
@@ -117,6 +118,9 @@ export const BOOK_QUERY = gql`
             slug
             uid
             name
+            ... on Junior {
+              avatar
+            }
           }
           note
           comment
@@ -144,6 +148,23 @@ export const BOOK_QUERY = gql`
       }
       cover
       format
+    }
+  }
+`;
+
+export const SEARCH_FOR_BOOKS = gql`
+  query searchForBooks(
+    $fields: [BookFilterField!]!
+    $query: String!
+    $fuzzy: Boolean
+  ) {
+    books(filterOn: { fields: $fields, query: $query, fuzzy: $fuzzy }) {
+      nodes {
+        isbn
+        title
+        author
+        cover
+      }
     }
   }
 `;
@@ -258,6 +279,9 @@ export const ADD_BOOK_REVIEW = gql`
       reviewer {
         name
         slug
+        ... on Junior {
+          avatar
+        }
       }
       uid
     }
