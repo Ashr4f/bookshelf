@@ -132,20 +132,6 @@ h6 {
   @extend %clearfix;
 }
 
-.characters-container {
-  .character {
-    .actions-buttons-container {
-      .action-button {
-        @include columns-generator(3, 3%);
-
-        &:not(:last-child) {
-          margin-bottom: 0.75rem;
-        }
-      }
-    }
-  }
-}
-
 .zero-m-p {
   margin: 0 !important;
   padding: 0 !important;

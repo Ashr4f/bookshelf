@@ -92,7 +92,9 @@
                     class="borrowed"
                     *ngIf="bookBorrowerUID !== user.owner.uid"
                   >
-                    Not available, borrowed by:
+                    <span style="color: rgba(0,0,0,0.87) !important;"
+                      >Not available, borrowed by:
+                    </span>
                     <span class="borrower-name">{{ bookBorrowerName }}</span>
                   </div>
                 </ng-container>

@@ -1,56 +1,59 @@
-<form
-  nz-form
-  [formGroup]="validateForm"
-  class="login-form"
-  (ngSubmit)="submitForm()"
->
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your username!">
-      <nz-input-group nzPrefixIcon="user">
-        <input
-          type="text"
-          nz-input
-          formControlName="userName"
-          placeholder="Username"
-        />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your password!">
-      <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
-        <input
-          [type]="passwordVisible ? 'text' : 'password'"
-          nz-input
-          formControlName="password"
-          placeholder="Password"
-        />
-      </nz-input-group>
+<div class="container">
+  <form
+    nz-form
+    style="margin: 0 auto;"
+    [formGroup]="validateForm"
+    class="login-form"
+    (ngSubmit)="submitForm()"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your username!">
+        <nz-input-group nzPrefixIcon="user">
+          <input
+            type="text"
+            nz-input
+            formControlName="userName"
+            placeholder="Username"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your password!">
+        <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            nz-input
+            formControlName="password"
+            placeholder="Password"
+          />
+        </nz-input-group>
 
-      <ng-template #suffixTemplate>
-        <i
-          nz-icon
-          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-          (click)="passwordVisible = !passwordVisible"
-        ></i>
-      </ng-template>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control>
-      <span *ngIf="wrongData" style="color: #f5222d;"
-        >Wrong username or password</span
-      >
-      <button
-        nz-button
-        [nzLoading]="loginLoading"
-        class="login-form-button"
-        [nzType]="'primary'"
-      >
-        Log in
-      </button>
-      Or
-      <a routerLink="/register">register now!</a>
-    </nz-form-control>
-  </nz-form-item>
-</form>
+        <ng-template #suffixTemplate>
+          <i
+            nz-icon
+            [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+            (click)="passwordVisible = !passwordVisible"
+          ></i>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <span *ngIf="wrongData" style="color: #f5222d;"
+          >Wrong username or password</span
+        >
+        <button
+          nz-button
+          [nzLoading]="loginLoading"
+          class="login-form-button"
+          [nzType]="'primary'"
+        >
+          Log in
+        </button>
+        Or
+        <a routerLink="/register">register now!</a>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
