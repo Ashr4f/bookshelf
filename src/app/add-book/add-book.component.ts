@@ -88,7 +88,6 @@ export class AddBookComponent implements OnInit {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    console.log(this.validateForm.status);
 
     if (this.validateForm.status === "VALID") {
       this.isbn = this.validateForm.value.bookISBN;
@@ -112,7 +111,6 @@ export class AddBookComponent implements OnInit {
         )
         .then(
           (response: any) => {
-            console.log(response);
             this.router.navigate([`books/${response.data.addBook.isbn}`]);
           },
           err => {

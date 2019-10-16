@@ -58,21 +58,18 @@ export class BookListComponent implements OnInit {
   }
 
   showAvailable() {
-    console.log("av");
     this.showAllBooks = false;
     this.showUnAvailableOnly = false;
     this.showAvailableOnly = true;
   }
 
   showUnavailable() {
-    console.log("unav");
     this.showAllBooks = false;
     this.showAvailableOnly = false;
     this.showUnAvailableOnly = true;
   }
 
   showAll() {
-    console.log("all");
     this.showAvailableOnly = false;
     this.showUnAvailableOnly = false;
     this.showAllBooks = true;

@@ -63,7 +63,6 @@ export class LoginComponent implements OnInit {
         err => {
           this.wrongData = true;
           this.loginLoading = false;
-          console.log(err);
         }
       );
   }

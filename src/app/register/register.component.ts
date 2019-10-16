@@ -81,13 +81,10 @@ export class RegisterComponent implements OnInit {
       .subscribe(
         response => {
           localStorage.setItem("token", response.data.registerWithBasic.token);
-          console.log(response);
           window.location.href = "/";
         },
         err => {
           this.registerHasError = true;
-          console.log(err);
-
           this.registerError = err.message.split(/juniors:(.+)/)[1]
             ? "You must insert the email that you use at BeCode"
             : err.message.split(/error:(.+)/)[1];
