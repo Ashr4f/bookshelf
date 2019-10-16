@@ -1,16 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef, HostListener } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { AuthService } from "src/app/services/auth.service";
 import { Router } from "@angular/router";
 import { User } from "./profile/profile.interface";
-
-type Book = {
-  nodes: any;
-};
-
-type Response = {
-  books: Book;
-};
+import { QueriesService } from "./services/gql-queries.service";
+import { PageTitleService } from "./services/page-title.service";
 
 @Component({
   selector: "app-root",
@@ -18,25 +12,66 @@ type Response = {
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = "bookshelf";
   user: any;
+  loading: boolean = true;
+  showSearchResults: boolean = false;
+  closeSearchResults: boolean = false;
+  searchResults: any[] = [];
+  searchLoading: boolean = false;
+
+  @HostListener("document:click", ["$event"])
+  clickedOutSide(event: any) {
+    if (this.showSearchResults) {
+      this.showSearchResults = false;
+    }
+  }
+
+  clickedInsideSearchBar(event: Event) {
+    event.stopPropagation();
+    this.showSearchResults = true;
+  }
 
   constructor(
     public apollo: Apollo,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private gqlQueries: QueriesService,
+    private pageTitle: PageTitleService
   ) {
     this.auth.userVar$.subscribe((data: User) => {
       if (data !== null && data !== undefined) {
         this.user = data.consumer;
       }
+      this.loading = false;
     });
   }
   ngOnInit() {
     this.auth.start();
+    this.pageTitle.setPageTitle("Home");
   }
 
-  logout() {
-    this.auth.logout();
+  booksSearch(query: string) {
+    this.searchLoading = true;
+    this.gqlQueries.searchForBooks(query).then(
+      (res: any) => {
+        this.searchResults = res.data.books.nodes;
+        this.searchLoading = false;
+        console.log(this.searchResults);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  isValidCoverUrl(element: any) {
+    let coverUrlRegEx = new RegExp(
+      "^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)"
+    );
+
+    if (coverUrlRegEx.test(element)) {
+      return true;
+    }
+    return false;
   }
 }

@@ -1,242 +1,317 @@
 <p *ngIf="loading">Loading...</p>
-<div *ngIf="!loading">
-  <h3>{{ bookData.title }}</h3>
-
-  <div>
-    Global rating:
-    <nz-rate
-      [(ngModel)]="bookNotes"
-      [nzTooltips]="tooltips"
-      nzAllowHalf
-      nzDisabled
-    ></nz-rate
-    >({{ bookData.reviews.totalCount }})
-  </div>
-
-  <!-- <img
-    src="{{ bookData.cover }}"
-    alt="Book Cover"
-    #bookCover
-    (error)="
-      bookCover.onerror = null;
-      bookCover.src = '../assets/images/book-cover-placeholder.png'
-    "
-  /> -->
-
-  <p *ngIf="bookData.editor">Edited by: {{ bookData.editor }}</p>
-
-  <div *ngIf="BookAvailability && bookInMySchool">
-    <p>
-      Available
-      <span *ngIf="bookData.format === 'PHYSICAL'">PHYSICAL</span>
-      <span *ngIf="bookData.format === 'EBOOK'">EBOOK</span>
-      <span *ngIf="bookData.format === 'BOTH'">Both PHYSICAL and EBOOK</span>
-    </p>
-    <button type="button" (click)="rentCurrentBook()">RENT</button>
-  </div>
-
-  <div *ngIf="BookAvailability === false">
-    <div *ngIf="bookBorrowerUID === user.owner.uid">
-      <p>
-        You've borrowed this book, consider returning it when you finish reading
-        it please.
-      </p>
-      <button type="button" (click)="returnCurrentBook()">RETURN BOOK</button>
-    </div>
-
-    <div *ngIf="bookBorrowerUID !== user.owner.uid">
-      Not available, borrowed by: <span>{{ bookBorrowerName }}</span>
-    </div>
-  </div>
-
-  <div *ngIf="bookInMySchool === false">
-    This book isn't available at your school!
-  </div>
-
-  <div>
-    <button routerLink="/books/{{ isbn }}/edit" type="button">EDIT</button>
-  </div>
-
-  <h4 style="margin-bottom: 12px;">
-    Availabilities:
-  </h4>
-  <div
-    *ngFor="let school of schoolsAvailabilities"
-    class="availability-tag"
-    title="{{ school.available ? 'Available' : 'Unavailable' }}"
-  >
-    <nz-tag *ngIf="school.available" [nzColor]="'green'">{{
-      school.slug
-    }}</nz-tag>
-    <nz-tag *ngIf="!school.available" nzTool [nzColor]="'volcano'">{{
-      school.slug
-    }}</nz-tag>
-  </div>
-
-  <div *ngIf="allBookReviews.length > 0" class="comments-section">
-    <h4>Reviews:</h4>
-    <div class="comment-container" *ngFor="let review of allBookReviews">
-      <ng-container *ngIf="review.comment && review.comment.length > 0">
-        <div
-          *ngIf="
-            (!enableCommentEdit && review.reviewer.slug !== user.owner.slug) ||
-            (enableCommentEdit && review.reviewer.slug !== user.owner.slug) ||
-            (!enableCommentEdit && review.reviewer.slug === user.owner.slug)
-          "
-          class="reviewer-rate"
-        >
-          <nz-rate
-            [(ngModel)]="review.note"
-            [nzTooltips]="tooltips"
-            [nzAllowClear]="false"
-            nzDisabled
-          ></nz-rate>
+<div *ngIf="!loading" class="semi-fluid-container">
+  <div class="book-page-container">
+    <article class="book-container main-box-shadow">
+      <div class="book-content clearfix">
+        <div class="book-cover-container">
+          <img
+            class="main-box-shadow"
+            src="{{
+              isValidCoverUrl(bookData.cover)
+                ? bookData.cover
+                : '../assets/images/book-cover-placeholder.jpg'
+            }}"
+            #bookCover
+            (error)="
+              bookCover.onerror = null;
+              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
+            "
+            alt="book cover"
+          />
         </div>
+        <div class="book-details">
+          <div class="book-heading">
+            <div class="book-title">
+              <h3>{{ bookData.title }}</h3>
+            </div>
+            <div class="book-rating">
+              <nz-rate
+                [(ngModel)]="bookNotes"
+                nzAllowHalf
+                [nzTooltips]="tooltips"
+                nzDisabled
+              ></nz-rate
+              >({{ bookData.reviews.totalCount }})
+            </div>
+          </div>
+          <div class="book-body">
+            <div class="book-author">
+              <p>
+                By <span class="book-author-name">{{ bookData.author }}</span>
+              </p>
+            </div>
+            <div class="book-editor" *ngIf="bookData.editor">
+              <p>
+                , edited by:
+                <span class="book-editor-name">{{ bookData.editor }}</span>
+              </p>
+            </div>
+            <div class="available-at">
+              <div *ngIf="BookAvailability && bookInMySchool">
+                <p>
+                  Type:
+                  <span *ngIf="bookData.format === 'PHYSICAL'">PHYSICAL</span>
+                  <span *ngIf="bookData.format === 'EBOOK'">EBOOK</span>
+                  <span *ngIf="bookData.format === 'BOTH'"
+                    >Both PHYSICAL and EBOOK</span
+                  >
+                </p>
+              </div>
+            </div>
 
-        <div
-          *ngIf="enableCommentEdit && review.reviewer.slug === user.owner.slug"
-          class="reviewer-rate"
-        >
-          <nz-rate
-            [(ngModel)]="bookReview"
-            [nzTooltips]="tooltips"
-            [nzAllowClear]="false"
-          ></nz-rate>
-        </div>
+            <div class="book-availabilities">
+              <h4 style="margin-bottom: 12px;">
+                Availabilities:
+              </h4>
+              <div
+                *ngFor="let school of schoolsAvailabilities"
+                class="availability-tag"
+                title="{{ school.available ? 'Available' : 'Unavailable' }}"
+              >
+                <nz-tag *ngIf="school.available" [nzColor]="'green'">{{
+                  school.slug
+                }}</nz-tag>
+                <nz-tag
+                  *ngIf="!school.available"
+                  nzTool
+                  [nzColor]="'volcano'"
+                  >{{ school.slug }}</nz-tag
+                >
+              </div>
 
-        <nz-comment
-          nzAuthor="{{ review.reviewer.name }}"
-          [nzDatetime]="formatCommentDate(review.createdAt.iso.datetime)"
-        >
-          <nz-avatar
-            nz-comment-avatar
-            [nzShape]="'square'"
-            nzIcon="user"
-          ></nz-avatar>
-          <nz-comment-content>
-            <p
-              *ngIf="
-                (!enableCommentEdit &&
-                  review.reviewer.slug !== user.owner.slug) ||
-                (enableCommentEdit && review.reviewer.slug !== user.owner.slug)
-              "
-            >
-              {{ review.comment }}
-            </p>
-            <p
-              *ngIf="
-                !enableCommentEdit && review.reviewer.slug === user.owner.slug
-              "
-            >
-              {{ review.comment }}
-            </p>
+              <div class="availibility-message">
+                <ng-container *ngIf="BookAvailability === false">
+                  <div *ngIf="bookBorrowerUID === user.owner.uid">
+                    <p>
+                      You've borrowed this book, consider returning it when you
+                      finish reading it please.
+                    </p>
+                  </div>
+
+                  <div
+                    class="borrowed"
+                    *ngIf="bookBorrowerUID !== user.owner.uid"
+                  >
+                    <span style="color: rgba(0,0,0,0.87) !important;"
+                      >Not available, borrowed by:
+                    </span>
+                    <span class="borrower-name">{{ bookBorrowerName }}</span>
+                  </div>
+                </ng-container>
+
+                <div *ngIf="bookInMySchool === false">
+                  This book isn't available at your school!
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="BookAvailability && bookInMySchool">
+              <div class="book-action-button" (click)="rentCurrentBook()">
+                RENT
+              </div>
+            </ng-container>
+
             <ng-container
               *ngIf="
-                review.reviewer.slug === user.owner.slug && enableCommentEdit
+                BookAvailability === false && bookBorrowerUID === user.owner.uid
               "
             >
-              <nz-form-item>
-                <textarea [(ngModel)]="myBookReviewComment" nz-input rows="2">
-                </textarea>
-              </nz-form-item>
-              <nz-form-item>
-                <button
-                  nz-button
-                  nzType="primary"
-                  [nzLoading]="submitting"
-                  [disabled]="!myBookReviewComment"
-                  (click)="
-                    editOwnReview();
-                    enableCommentEdit = false;
-                    review.comment = myBookReviewComment
-                  "
-                >
-                  Edit
-                </button>
-                <button
-                  style="margin-left: 12px;"
-                  nz-button
-                  [nzLoading]="canceling"
-                  (click)="enableCommentEdit = false"
-                >
-                  Cancel
-                </button>
-              </nz-form-item>
+              <div class="book-action-button" (click)="returnCurrentBook()">
+                RETURN BOOK
+              </div>
             </ng-container>
-          </nz-comment-content>
-          <ng-container *ngIf="review.reviewer.slug === user.owner.slug">
-            <nz-comment-action>
-              <div
-                *ngIf="!enableCommentEdit"
-                style="margin-right: 8px"
-                (click)="
-                  enableCommentEdit = true; myBookReviewComment = review.comment
-                "
-                nz-tooltip
-                nzTitle="Edit"
-              >
-                <i nz-icon nzType="edit"></i>
-                <span class="secondary"> Edit </span>
-              </div>
-            </nz-comment-action>
 
-            <nz-comment-action>
-              <div
-                *ngIf="!enableCommentEdit"
-                (click)="deleteOwnReview()"
-                nz-tooltip
-                nzTitle="Delete"
+            <div
+              class="book-action-button edit-button"
+              routerLink="/books/{{ bookData.isbn }}/edit"
+            >
+              EDIT
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div *ngIf="allBookReviews.length > 0" class="comments-section">
+      <div class="comment-container" *ngFor="let review of allBookReviews">
+        <ng-container>
+          <div
+            *ngIf="
+              (!enableCommentEdit &&
+                review.reviewer.slug !== user.owner.slug) ||
+              (enableCommentEdit && review.reviewer.slug !== user.owner.slug) ||
+              (!enableCommentEdit && review.reviewer.slug === user.owner.slug)
+            "
+            class="reviewer-rate"
+          >
+            <nz-rate
+              [(ngModel)]="review.note"
+              [nzTooltips]="tooltips"
+              [nzAllowClear]="false"
+              nzDisabled
+            ></nz-rate>
+          </div>
+
+          <div
+            *ngIf="
+              enableCommentEdit && review.reviewer.slug === user.owner.slug
+            "
+            class="reviewer-rate"
+          >
+            <nz-rate
+              [(ngModel)]="bookReview"
+              [nzTooltips]="tooltips"
+              [nzAllowClear]="false"
+            ></nz-rate>
+          </div>
+
+          <nz-comment
+            nzAuthor="{{ review.reviewer.name }}"
+            [nzDatetime]="formatCommentDate(review.createdAt.iso.datetime)"
+          >
+            <nz-avatar
+              nz-comment-avatar
+              [nzShape]="'square'"
+              nzIcon="user"
+              nzSrc="{{ review.reviewer.avatar }}"
+            ></nz-avatar>
+            <nz-comment-content>
+              <p
+                *ngIf="
+                  (!enableCommentEdit &&
+                    review.reviewer.slug !== user.owner.slug) ||
+                  (enableCommentEdit &&
+                    review.reviewer.slug !== user.owner.slug)
+                "
               >
-                <i
-                  nz-icon
-                  nzType="delete"
-                  [nzTheme]="'twotone'"
-                  [nzTwotoneColor]="'red'"
-                ></i>
-                <span nz-text nzType="danger"> Delete </span>
-              </div>
-            </nz-comment-action>
-          </ng-container>
-        </nz-comment>
-      </ng-container>
+                {{ review.comment }}
+              </p>
+              <p
+                *ngIf="
+                  !enableCommentEdit && review.reviewer.slug === user.owner.slug
+                "
+              >
+                {{ review.comment }}
+              </p>
+              <ng-container
+                *ngIf="
+                  review.reviewer.slug === user.owner.slug && enableCommentEdit
+                "
+              >
+                <nz-form-item>
+                  <textarea
+                    placeholder="Your review"
+                    [(ngModel)]="myBookReviewComment"
+                    nz-input
+                    rows="2"
+                  >
+                  </textarea>
+                </nz-form-item>
+                <nz-form-item>
+                  <button
+                    nz-button
+                    nzType="primary"
+                    [nzLoading]="submitting"
+                    (click)="
+                      editOwnReview();
+                      enableCommentEdit = false;
+                      review.comment = myBookReviewComment;
+                      review.note = bookReview
+                    "
+                  >
+                    Edit
+                  </button>
+                  <button
+                    style="margin-left: 12px;"
+                    nz-button
+                    [nzLoading]="canceling"
+                    (click)="enableCommentEdit = false"
+                  >
+                    Cancel
+                  </button>
+                </nz-form-item>
+              </ng-container>
+            </nz-comment-content>
+            <ng-container *ngIf="review.reviewer.slug === user.owner.slug">
+              <nz-comment-action>
+                <div
+                  *ngIf="!enableCommentEdit"
+                  style="margin-right: 8px"
+                  (click)="
+                    enableCommentEdit = true;
+                    myBookReviewComment = review.comment
+                  "
+                  nz-tooltip
+                  nzTitle="Edit"
+                >
+                  <i nz-icon nzType="edit"></i>
+                  <span class="secondary"> Edit </span>
+                </div>
+              </nz-comment-action>
+
+              <nz-comment-action>
+                <div
+                  *ngIf="!enableCommentEdit"
+                  (click)="
+                    deleteOwnReview($event.target.closest('.comment-container'))
+                  "
+                  #deleteReviewButton
+                  nz-tooltip
+                  nzTitle="Delete"
+                >
+                  <i
+                    nz-icon
+                    nzType="delete"
+                    [nzTheme]="'twotone'"
+                    [nzTwotoneColor]="'red'"
+                  ></i>
+                  <span nz-text nzType="danger"> Delete </span>
+                </div>
+              </nz-comment-action>
+            </ng-container>
+          </nz-comment>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="review-input" *ngIf="!hasOwnReview">
+      <div style="padding-left: 48px;">
+        <span>Your rate: </span>
+        <nz-rate
+          [(ngModel)]="bookReview"
+          [nzTooltips]="tooltips"
+          [nzAllowClear]="false"
+        ></nz-rate>
+      </div>
+      <nz-comment>
+        <nz-avatar
+          nz-comment-avatar
+          [nzShape]="'square'"
+          nzIcon="user"
+          nzSrc="{{ user.owner.avatar }}"
+        ></nz-avatar>
+        <nz-comment-content>
+          <nz-form-item>
+            <textarea
+              placeholder="Your review"
+              [(ngModel)]="myBookReviewComment"
+              nz-input
+              rows="2"
+            ></textarea>
+          </nz-form-item>
+          <nz-form-item>
+            <button
+              nz-button
+              nzType="primary"
+              [nzLoading]="submitting"
+              [disabled]="!myBookReviewComment && !bookReview"
+              (click)="addOwnReview()"
+            >
+              Add review
+            </button>
+          </nz-form-item>
+        </nz-comment-content>
+      </nz-comment>
     </div>
   </div>
-
-  <ng-container *ngIf="!hasOwnReview">
-    <div>
-      <span>Your rate: </span>
-      <nz-rate
-        [(ngModel)]="bookReview"
-        [nzTooltips]="tooltips"
-        [nzAllowClear]="false"
-      ></nz-rate>
-    </div>
-    <nz-comment>
-      <nz-avatar
-        nz-comment-avatar
-        [nzShape]="'square'"
-        nzIcon="user"
-      ></nz-avatar>
-      <nz-comment-content>
-        <nz-form-item>
-          <textarea
-            [(ngModel)]="myBookReviewComment"
-            nz-input
-            rows="4"
-          ></textarea>
-        </nz-form-item>
-        <nz-form-item>
-          <button
-            nz-button
-            nzType="primary"
-            [nzLoading]="submitting"
-            [disabled]="!myBookReviewComment && !bookReview"
-            (click)="addOwnReview()"
-          >
-            Add review
-          </button>
-        </nz-form-item>
-      </nz-comment-content>
-    </nz-comment>
-  </ng-container>
 </div>

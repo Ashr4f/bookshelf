@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { QueriesService } from "../services/gql-queries.service";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: "app-profile",
@@ -11,7 +12,11 @@ export class ProfileComponent implements OnInit {
   loading: boolean = true;
   user: any = {};
 
-  constructor(public apollo: Apollo, private gqlQueries: QueriesService) {}
+  constructor(
+    public apollo: Apollo,
+    private gqlQueries: QueriesService,
+    private auth: AuthService
+  ) {}
 
   ngOnInit() {
     this.gqlQueries.getCurrentUser().then((res: any) => {
@@ -43,5 +48,9 @@ export class ProfileComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  logout() {
+    this.auth.logout();
   }
 }

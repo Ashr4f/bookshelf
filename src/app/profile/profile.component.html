@@ -2,9 +2,10 @@
 <ng-container *ngIf="!loading">
   <div>
     <h3>
-      Hello
+      Hello ADD PHOTO HERE
       <b>{{ user.name }}</b>
     </h3>
+    <button (click)="logout()">LOGOUT</button>
   </div>
   <h2>Rented books:</h2>
   <div class="books-container">
@@ -31,17 +32,19 @@
             src="{{
               isValidCoverUrl(lentBook.book.cover)
                 ? lentBook.book.cover
-                : '../assets/images/book-cover-placeholder.png'
+                : '../assets/images/book-cover-placeholder.jpg'
             }}"
             alt="Book Cover"
             #bookCover
             (error)="
               bookCover.onerror = null;
-              bookCover.src = '../assets/images/book-cover-placeholder.png'
+              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
             "
           />
         </ng-template>
       </div>
     </div>
   </div>
+
+  <h2>Add reviewed books here, later:</h2>
 </ng-container>

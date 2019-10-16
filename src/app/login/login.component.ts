@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Apollo } from "apollo-angular";
 import { LOGIN_MUTATION } from "../graphql";
 import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../services/auth.service";
+import { User } from "../profile/profile.interface";
 
 type LoginData = {
   loginWithBasic: { token: string; connected: Boolean };
@@ -15,7 +17,7 @@ type LoginData = {
 })
 export class LoginComponent implements OnInit {
   validateForm: FormGroup;
-  user: string = "";
+  user: any;
   password: string = "";
   wrongData: Boolean = false;
   passwordVisible: Boolean = false;
@@ -37,7 +39,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public apollo: Apollo,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private auth: AuthService
   ) {}
 
   login() {
@@ -55,9 +58,7 @@ export class LoginComponent implements OnInit {
           this.wrongData = false;
           this.loginLoading = false;
           localStorage.setItem("token", response.data.loginWithBasic.token);
-          if (response.data.loginWithBasic.connected) {
-            this.router.navigate(["/"]);
-          }
+          window.location.href = "/";
         },
         err => {
           this.wrongData = true;

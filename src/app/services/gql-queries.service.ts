@@ -12,7 +12,8 @@ import {
   ADD_BOOK_MUTATION,
   RENT_BOOK,
   RETURN_BOOK,
-  BECODE_SCHOOLS_SLUGS
+  BECODE_SCHOOLS_SLUGS,
+  SEARCH_FOR_BOOKS
 } from "../graphql";
 
 @Injectable({
@@ -48,6 +49,20 @@ export class QueriesService {
           isbn: isbn
         },
         fetchPolicy: "network-only"
+      })
+      .toPromise();
+  }
+
+  async searchForBooks(query: string) {
+    return await this.apollo
+      .query({
+        query: SEARCH_FOR_BOOKS,
+        variables: {
+          fields: ["TITLE", "AUTHOR"],
+          fuzzy: true,
+          query: query
+        },
+        fetchPolicy: "cache-first"
       })
       .toPromise();
   }

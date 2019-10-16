@@ -5,17 +5,17 @@ import { AuthGuardsService } from "./guards/auth-guards.service";
 import { ProfileComponent } from "./profile/profile.component";
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
-import { CreateBookComponent } from "./create-book/create-book.component";
+import { AddBookComponent } from "./add-book/add-book.component";
 import { BookListComponent } from "./book-list/book-list.component";
 import { BookItemComponent } from "./book-item/book-item.component";
 import { EditBookComponent } from "./edit-book/edit-book.component";
+import { HomeComponent } from "./home/home.component";
+import { NotFoundComponent } from "./not-found/not-found.component";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "",
-    pathMatch: "full",
-    canActivate: [AuthGuardsService]
+    component: HomeComponent
   },
   {
     path: "profile",
@@ -30,8 +30,8 @@ const routes: Routes = [
     canActivate: [AuthGuardsService]
   },
   {
-    path: "books/create",
-    component: CreateBookComponent,
+    path: "books/add",
+    component: AddBookComponent,
     canActivate: [AuthGuardsService]
   },
   {
@@ -46,7 +46,8 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: ""
+    component: NotFoundComponent,
+    canActivate: [AuthGuardsService]
   }
 ];
 
