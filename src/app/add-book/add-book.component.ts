@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
   templateUrl: "./create-book.component.html",
   styleUrls: ["./create-book.component.scss"]
 })
-export class CreateBookComponent implements OnInit {
+export class AddBookComponent implements OnInit {
   validateForm: FormGroup;
   bookExists: Boolean = false;
   CreateBookErrorMessage: string;
