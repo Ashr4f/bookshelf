@@ -82,9 +82,7 @@ export class RegisterComponent implements OnInit {
         response => {
           localStorage.setItem("token", response.data.registerWithBasic.token);
           console.log(response);
-          if (response.data.registerWithBasic.connected) {
-            this.router.navigate(["/"]);
-          }
+          window.location.href = "/";
         },
         err => {
           this.registerHasError = true;
