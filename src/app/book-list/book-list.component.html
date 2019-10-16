@@ -28,9 +28,9 @@
           {{
             allBookAvailabilities[i]
               .slice(0, -1)
-              .join(", ")
+              .join("<span>, </span>")
               .concat(
-                allBookAvailabilities[i].length > 1 ? " and " : "",
+                allBookAvailabilities[i].length > 1 ? " <span> and </span> " : "",
                 allBookAvailabilities[i].slice(-1)
               )
           }}
@@ -50,13 +50,13 @@
             src="{{
               isValidCoverUrl(book.cover)
                 ? book.cover
-                : '../assets/images/book-cover-placeholder.png'
+                : '../assets/images/book-cover-placeholder.jpg'
             }}"
             alt="Book Cover"
             #bookCover
             (error)="
               bookCover.onerror = null;
-              bookCover.src = '../assets/images/book-cover-placeholder.png'
+              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
             "
           />
         </ng-template>
@@ -72,31 +72,84 @@
     </ng-container>
   </div>
 </div> -->
-<div *ngIf="!loading" class="books-container">
-  <article class="book-container">
-    <div class="book-content">
-      <div class="book-cover-container">
-        <img src="" alt="book cover" />
+
+<div *ngIf="!loading" class="semi-fluid-container">
+  <nz-back-top></nz-back-top>
+  <div class="masonry-row books-container">
+    <article
+      *ngFor="let book of allBooks; let i = index"
+      class="masonry-item book-container main-box-shadow"
+    >
+      <div class="book-content clearfix">
+        <div class="book-cover-container">
+          <img
+            class="main-box-shadow"
+            src="{{
+              isValidCoverUrl(book.cover)
+                ? book.cover
+                : '../assets/images/book-cover-placeholder.jpg'
+            }}"
+            #bookCover
+            (error)="
+              bookCover.onerror = null;
+              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
+            "
+            alt="book cover"
+          />
+        </div>
+        <div class="book-details">
+          <div class="book-heading">
+            <div class="book-title">
+              <h3>{{ book.title }}</h3>
+            </div>
+            <div class="book-rating">
+              <nz-rate
+                [(ngModel)]="booksReviews[i]"
+                nzAllowHalf
+                [nzTooltips]="tooltips"
+                nzDisabled
+              ></nz-rate
+              >({{ book.reviews.totalCount }})
+            </div>
+          </div>
+          <div class="book-body">
+            <div class="book-author">
+              <p>
+                By <span class="book-author-name">{{ book.author }}</span>
+              </p>
+            </div>
+            <div class="available-at">
+              <ul class="schools">
+                <span>
+                  {{
+                    allBookAvailabilities[i].length > 1
+                      ? "schools: "
+                      : "school: "
+                  }}
+                </span>
+                <li class="school">
+                  {{
+                    allBookAvailabilities[i]
+                      .slice(0, -1)
+                      .join(", ")
+                      .concat(
+                        allBookAvailabilities[i].length > 1
+                          ? "
+                  and 
+                  "
+                          : "",
+                        allBookAvailabilities[i].slice(-1)
+                      )
+                  }}
+                </li>
+              </ul>
+            </div>
+            <div class="book-action-button" routerLink="/books/{{ book.isbn }}">
+              View
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="book-heading">
-        <div class="book-title">
-          <h3>Title</h3>
-        </div>
-        <div class="book-rating">
-          Rating here
-        </div>
-      </div>
-      <div class="book-body">
-        <div class="book-author">
-          <p>By <span class="book-author-name">Author</span></p>
-        </div>
-        <div class="available-at">
-          <ul class="schools">
-            Schools:
-            <li class="school">School</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </article>
+    </article>
+  </div>
 </div>
