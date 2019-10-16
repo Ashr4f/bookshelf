@@ -4,6 +4,7 @@ import { Subscription } from "apollo-client/util/Observable";
 import { Apollo } from "apollo-angular";
 import { QueriesService } from "src/app/services/gql-queries.service";
 import { formatDistance } from "date-fns";
+import { PageTitleService } from "../services/page-title.service";
 
 @Component({
   selector: "hn-book-item",
@@ -42,90 +43,106 @@ export class BookItemComponent implements OnInit {
   constructor(
     public apollo: Apollo,
     private route: ActivatedRoute,
-    private gqlQueries: QueriesService
+    private gqlQueries: QueriesService,
+    private pageTitle: PageTitleService
   ) {}
 
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
       this.isbn = params["id"];
-    });
+      this.bookReview = 3;
+      this.allBookReviews = [];
+      this.bookNotes = 0;
+      this.myBookReviewComment = "";
+      this.hasOwnReview = false;
+      this.enableCommentEdit = false;
+      this.BookAvailability = true;
+      this.bookInMySchool = false;
+      this.schoolsAvailabilities = [];
+      this.loading = true;
 
-    this.gqlQueries.getCurrentUser().then((userData: any) => {
-      this.gqlQueries.getBookByISBN(this.isbn).then((bookData: any) => {
-        this.user = userData.data.consumer;
-        this.userSchoolSlug = this.user.owner.promo.school.slug;
-        this.bookData = bookData.data.book;
+      this.gqlQueries.getCurrentUser().then((userData: any) => {
+        this.gqlQueries.getBookByISBN(this.isbn).then((bookData: any) => {
+          this.user = userData.data.consumer;
+          console.log(this.user);
 
-        this.gqlQueries
-          .getBeCodeSchools()
-          .then((res: { loading: boolean; data: any }) => {
-            this.loading = res.loading;
-            res.data.schools.nodes.forEach((school: any) => {
-              school.available = false;
-              this.schoolsAvailabilities.push(school);
-            });
+          this.userSchoolSlug = this.user.owner.promo.school.slug;
 
-            this.bookData.availabilities.map((a: any) => {
-              if (a.school.slug === this.userSchoolSlug) {
-                this.bookInMySchool = true;
-              }
+          this.bookData = bookData.data.book;
 
-              this.schoolsAvailabilities.forEach(school => {
-                if (a.available === true) {
-                  if (a.school.slug === school.slug) {
-                    school.available = true;
-                  }
-                }
+          this.pageTitle.setPageTitle(`Bookshelf - ${this.bookData.title}`);
+
+          this.gqlQueries
+            .getBeCodeSchools()
+            .then((res: { loading: boolean; data: any }) => {
+              this.loading = res.loading;
+              res.data.schools.nodes.forEach((school: any) => {
+                school.available = false;
+                this.schoolsAvailabilities.push(school);
               });
 
-              if (a.available === false) {
-                a.borrower.bookLendings.forEach((b: any) => {
-                  if (b.book.isbn === this.isbn) {
-                    if (this.userSchoolSlug === b.school.slug) {
-                      this.BookAvailability = false;
-                      this.rentedBookSchool = b.school.slug;
-                      this.bookBorrowerName = a.borrower.name;
-                      this.bookBorrowerUID = a.borrower.uid;
+              this.bookData.availabilities.map((a: any) => {
+                if (a.school.slug === this.userSchoolSlug) {
+                  this.bookInMySchool = true;
+                }
+
+                this.schoolsAvailabilities.forEach(school => {
+                  if (a.available === true) {
+                    if (a.school.slug === school.slug) {
+                      school.available = true;
                     }
                   }
                 });
+
+                if (a.available === false) {
+                  a.borrower.bookLendings.forEach((b: any) => {
+                    if (b.book.isbn === this.isbn) {
+                      if (this.userSchoolSlug === b.school.slug) {
+                        this.BookAvailability = false;
+                        this.rentedBookSchool = b.school.slug;
+                        this.bookBorrowerName = a.borrower.name;
+                        this.bookBorrowerUID = a.borrower.uid;
+                      }
+                    }
+                  });
+                }
+              });
+            });
+
+          if (this.bookData.reviews.nodes.length > 0) {
+            this.allBookReviews = this.bookData.reviews.nodes;
+            let totalReviews = 0;
+            this.allBookReviews.map((a: any) => {
+              totalReviews += a.note;
+
+              if (a.reviewer.slug === this.user.owner.slug) {
+                this.hasOwnReview = true;
               }
             });
-          });
+            totalReviews =
+              Math.round(
+                (totalReviews / this.bookData.reviews.totalCount) * 10
+              ) / 10;
+            this.bookNotes = totalReviews;
 
-        if (this.bookData.reviews.nodes.length > 0) {
-          this.allBookReviews = this.bookData.reviews.nodes;
-          let totalReviews = 0;
-          this.allBookReviews.map((a: any) => {
-            totalReviews += a.note;
-            if (
-              a.reviewer.slug === this.user.owner.slug &&
-              a.comment.length > 0
-            ) {
-              this.hasOwnReview = true;
-            }
-          });
-          totalReviews =
-            Math.round((totalReviews / this.bookData.reviews.totalCount) * 10) /
-            10;
-          this.bookNotes = totalReviews;
-
-          for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
-            if (
-              this.user.owner.uid ===
-              this.bookData.reviews.nodes[i].reviewer.uid
-            ) {
-              this.reviewUID = this.bookData.reviews.nodes[i].uid;
-              this.myBookReview = this.bookData.reviews.nodes[i].note;
-              this.bookReview = this.myBookReview;
+            for (let i = 0; i < this.bookData.reviews.nodes.length; i++) {
+              if (
+                this.user.owner.uid ===
+                this.bookData.reviews.nodes[i].reviewer.uid
+              ) {
+                this.reviewUID = this.bookData.reviews.nodes[i].uid;
+                this.myBookReview = this.bookData.reviews.nodes[i].note;
+                this.bookReview = this.myBookReview;
+              }
             }
           }
-        }
+        });
       });
     });
   }
 
   ngOnDestroy() {
+    this.pageTitle.setPageTitle("Bookshelf");
     this.routeSub.unsubscribe();
   }
 
@@ -196,16 +213,20 @@ export class BookItemComponent implements OnInit {
       });
   }
 
-  deleteOwnReview() {
+  deleteOwnReview(review: HTMLElement) {
     let deleteConfirmation = confirm(
       "Are you sure you want to delete your own review?"
     );
+
     if (deleteConfirmation) {
       this.gqlQueries
         .deleteBookReview(this.reviewUID)
         .then((res: any) => {
           this.myBookReviewComment = undefined;
           this.myBookReview = undefined;
+          this.hasOwnReview = false;
+
+          this.allBookReviews.pop();
         })
         .catch((err: any) => {
           console.error(err);
@@ -213,24 +234,18 @@ export class BookItemComponent implements OnInit {
     }
   }
 
-  /*   sendBookReview() {
-    if (this.myBookReview !== undefined && this.bookReview !== 0) {
-      console.log("edit");
-      this.editOwnReview();
-    }
-
-    if (this.bookReview === 0) {
-      console.log("delete");
-      this.deleteOwnReview();
-    }
-
-    if (this.myBookReview === undefined) {
-      console.log("add");
-
-    }
-  }
- */
   formatCommentDate(commentDate: any) {
     return formatDistance(new Date(), new Date(commentDate));
+  }
+
+  isValidCoverUrl(element: any) {
+    let coverUrlRegEx = new RegExp(
+      "^(http(s)?|ftp)://.*(jpeg|png|gif|bmp|jpg|webp)"
+    );
+
+    if (coverUrlRegEx.test(element)) {
+      return true;
+    }
+    return false;
   }
 }
