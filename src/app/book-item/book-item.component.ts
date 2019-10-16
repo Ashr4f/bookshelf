@@ -66,7 +66,6 @@ export class BookItemComponent implements OnInit {
       this.gqlQueries.getCurrentUser().then((userData: any) => {
         this.gqlQueries.getBookByISBN(this.isbn).then((bookData: any) => {
           this.user = userData.data.consumer;
-          console.log(this.user);
 
           this.userSchoolSlug = this.user.owner.promo.school.slug;
 

@@ -479,9 +479,19 @@ h6 {
       0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     outline: 0;
+
+    &.full-width {
+      display: block;
+    }
+
     &.edit-button {
       background-color: #93635b;
     }
+
+    &.review-button {
+      background-color: #113d44;
+    }
+
     &:not(:last-of-type) {
       margin-right: 10px;
     }

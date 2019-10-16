@@ -127,6 +127,13 @@
             >
               EDIT
             </div>
+
+            <!-- <div
+              *ngIf="!hasOwnReview"
+              class="book-action-button review-button"
+            >
+              Write a review
+            </div> -->
           </div>
         </div>
       </div>
@@ -277,7 +284,8 @@
     <div class="review-input" *ngIf="!hasOwnReview">
       <h3 style="padding-left: 1rem;">Leave a review</h3>
       <div style="padding-left: 48px;">
-        <nz-rate
+        <span>Rate: </span
+        ><nz-rate
           [(ngModel)]="bookReview"
           [nzTooltips]="tooltips"
           [nzAllowClear]="false"

@@ -56,11 +56,8 @@ export class AppComponent {
       (res: any) => {
         this.searchResults = res.data.books.nodes;
         this.searchLoading = false;
-        console.log(this.searchResults);
       },
-      err => {
-        console.log(err);
-      }
+      err => {}
     );
   }
 

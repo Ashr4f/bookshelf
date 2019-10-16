@@ -22,7 +22,7 @@ export class ProfileComponent implements OnInit {
     this.gqlQueries.getCurrentUser().then((res: any) => {
       this.user = res.data.consumer.owner;
       console.log(this.user);
-      this.loading = res.loading;
+      this.loading = false;
     });
   }
 
