@@ -3,7 +3,7 @@
   <form
     nz-form
     [formGroup]="validateForm"
-    class="create-book-form"
+    class="add-book-form"
     (ngSubmit)="submitForm()"
   >
     <nz-form-item>
@@ -115,7 +115,7 @@
         <span *ngIf="bookExists" style="color: #f5222d;">{{
           CreateBookErrorMessage
         }}</span>
-        <button nz-button class="create-book-form-button" [nzType]="'primary'">
+        <button nz-button class="add-book-form-button" [nzType]="'primary'">
           Create
         </button>
       </nz-form-control>

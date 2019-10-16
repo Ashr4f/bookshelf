@@ -78,7 +78,7 @@ export const ALL_BOOKS_QUERY = gql`
         title
         author
         cover
-        reviews {
+        reviews(all: true) {
           totalCount
           nodes {
             note

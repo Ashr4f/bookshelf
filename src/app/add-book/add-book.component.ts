@@ -5,9 +5,9 @@ import { QueriesService } from "../services/gql-queries.service";
 import { Router } from "@angular/router";
 
 @Component({
-  selector: "app-create-book",
-  templateUrl: "./create-book.component.html",
-  styleUrls: ["./create-book.component.scss"]
+  selector: "app-add-book",
+  templateUrl: "./add-book.component.html",
+  styleUrls: ["./add-book.component.scss"]
 })
 export class AddBookComponent implements OnInit {
   validateForm: FormGroup;
