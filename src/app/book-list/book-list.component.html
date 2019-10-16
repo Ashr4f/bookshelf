@@ -1,80 +1,5 @@
 <h4 *ngIf="loading">Loading...</h4>
-<!-- <div *ngIf="!loading" class="books-container">
-  <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="availibilitiesMenu">
-    Filter
-    <i nz-icon nzType="down"></i>
-  </a>
-  <nz-dropdown-menu #availibilitiesMenu>
-    <ul nz-menu>
-      <li nz-menu-item (click)="showAll()">Show all</li>
-      <li nz-menu-item (click)="showAvailable()">Show all available</li>
-      <li nz-menu-item (click)="showUnavailable()">
-        Show all unavailable
-      </li>
-    </ul>
-  </nz-dropdown-menu>
-
-  <div *ngFor="let book of allBooks; let i = index" class="book">
-    <ng-container *ngIf="showAllBooks">
-      <div class="book-content">
-        <nz-card [nzCover]="coverTemplate">
-          <nz-card-meta
-            nzTitle="{{ book.author }}"
-            nzDescription="{{ book.title }}"
-          ></nz-card-meta>
-
-          <br />
-          {{ allBookAvailabilities[i].length > 1 ? "schools: " : "school: " }}
-          {{
-            allBookAvailabilities[i]
-              .slice(0, -1)
-              .join("<span>, </span>")
-              .concat(
-                allBookAvailabilities[i].length > 1 ? " <span> and </span> " : "",
-                allBookAvailabilities[i].slice(-1)
-              )
-          }}
-          <div class="book-rate">
-            <nz-rate
-              [(ngModel)]="booksReviews[i]"
-              [nzTooltips]="tooltips"
-              nzAllowHalf
-              nzDisabled
-            ></nz-rate
-            >({{ book.reviews.totalCount }})
-          </div>
-          <a routerLink="/books/{{ book.isbn }}">VIEW</a>
-        </nz-card>
-        <ng-template #coverTemplate>
-          <img
-            src="{{
-              isValidCoverUrl(book.cover)
-                ? book.cover
-                : '../assets/images/book-cover-placeholder.jpg'
-            }}"
-            alt="Book Cover"
-            #bookCover
-            (error)="
-              bookCover.onerror = null;
-              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
-            "
-          />
-        </ng-template>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="showAvailableOnly">
-      showAvailable
-    </ng-container>
-
-    <ng-container *ngIf="showUnAvailableOnly">
-      showUnAvailable
-    </ng-container>
-  </div>
-</div> -->
-
 <div *ngIf="!loading" class="semi-fluid-container">
-  <nz-back-top></nz-back-top>
   <div class="masonry-row books-container">
     <article
       *ngFor="let book of allBooks; let i = index"
@@ -144,7 +69,10 @@
                 </li>
               </ul>
             </div>
-            <div class="book-action-button" routerLink="/books/{{ book.isbn }}">
+            <div
+              class="book-action-button main-button"
+              routerLink="/books/{{ book.isbn }}"
+            >
               View
             </div>
           </div>

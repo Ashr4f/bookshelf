@@ -1,50 +1,153 @@
-<div *ngIf="loading">Loading...</div>
-<ng-container *ngIf="!loading">
-  <div>
-    <h3>
-      Hello ADD PHOTO HERE
-      <b>{{ user.name }}</b>
-    </h3>
-    <button (click)="logout()">LOGOUT</button>
-  </div>
-  <h2>Rented books:</h2>
-  <div class="books-container">
-    <div class="book" *ngFor="let lentBook of user.bookLendings">
-      <div class="book-content">
-        <nz-card [nzCover]="coverTemplate">
-          <nz-card-meta
-            nzTitle="{{ lentBook.book.author }}"
-            nzDescription="{{ lentBook.book.title }}"
-          ></nz-card-meta>
-          <a routerLink="/books/{{ lentBook.book.isbn }}">VIEW</a>
-          <br />
-          <button
-            (click)="
-              returnBook(returnBookButton.closest('.book'), lentBook.book.isbn)
-            "
-            #returnBookButton
-          >
-            RETURN
-          </button>
-        </nz-card>
-        <ng-template #coverTemplate>
-          <img
-            src="{{
-              isValidCoverUrl(lentBook.book.cover)
-                ? lentBook.book.cover
-                : '../assets/images/book-cover-placeholder.jpg'
-            }}"
-            alt="Book Cover"
-            #bookCover
-            (error)="
-              bookCover.onerror = null;
-              bookCover.src = '../assets/images/book-cover-placeholder.jpg'
-            "
-          />
-        </ng-template>
+<div class="semi-fluid-container">
+  <div *ngIf="loading">Loading...</div>
+  <ng-container *ngIf="!loading">
+    <div class="semi-fluid-container">
+      <div class="profile-picture-container">
+        <div class="profile-picture">
+          <nz-avatar
+            [nzShape]="'circle'"
+            nzIcon="user"
+            nzSrc="{{ user.avatar }}"
+          ></nz-avatar>
+        </div>
+        <h3 class="profile-title">
+          {{ user.name }}
+        </h3>
+        <div class="main-button logout-button" (click)="logout()">
+          LOGOUT <i nz-icon nzType="logout" nzTheme="outline"></i>
+        </div>
       </div>
     </div>
-  </div>
 
-  <h2>Add reviewed books here, later:</h2>
-</ng-container>
+    <div
+      *ngIf="user.bookLendings && user.bookLendings.length > 0"
+      class="lent-books"
+    >
+      <div class="semi-fluid-container">
+        <h2>Lent books: ({{ user.bookLendings.length }})</h2>
+      </div>
+      <div class="masonry-row books-container">
+        <article
+          *ngFor="let lentBook of user.bookLendings"
+          class="masonry-item book-container main-box-shadow"
+        >
+          <div class="book-content clearfix">
+            <div class="book-cover-container">
+              <img
+                class="main-box-shadow"
+                src="{{
+                  isValidCoverUrl(lentBook.book.cover)
+                    ? lentBook.book.cover
+                    : '../assets/images/book-cover-placeholder.jpg'
+                }}"
+                #bookCover
+                (error)="
+                  bookCover.onerror = null;
+                  bookCover.src = '../assets/images/book-cover-placeholder.jpg'
+                "
+                alt="book cover"
+              />
+            </div>
+            <div class="book-details">
+              <div class="book-heading">
+                <div class="book-title">
+                  <h3>{{ lentBook.book.title }}</h3>
+                </div>
+              </div>
+              <div class="book-body">
+                <div class="book-author">
+                  <p>
+                    By
+                    <span class="book-author-name">{{
+                      lentBook.book.author
+                    }}</span>
+                  </p>
+                </div>
+                <div class="book-action-buttons">
+                  <div
+                    class="book-action-button main-button secondary"
+                    (click)="
+                      returnBook(
+                        returnBookButton.closest('.book-container'),
+                        lentBook.book.isbn
+                      )
+                    "
+                    #returnBookButton
+                  >
+                    RETURN
+                  </div>
+                  <div
+                    class="book-action-button main-button"
+                    routerLink="/books/{{ lentBook.book.isbn }}"
+                  >
+                    View
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div
+      *ngIf="user.bookReviews.nodes && user.bookReviews.nodes.length > 0"
+      class="reviewd-books"
+    >
+      <div class="semi-fluid-container">
+        <h2>Reviewed books: ({{ user.bookReviews.totalCount }})</h2>
+      </div>
+
+      <div class="masonry-row books-container">
+        <article
+          *ngFor="let reviewedBook of user.bookReviews.nodes"
+          class="masonry-item book-container main-box-shadow"
+        >
+          <div class="book-content clearfix">
+            <div class="book-cover-container">
+              <img
+                class="main-box-shadow"
+                src="{{
+                  isValidCoverUrl(reviewedBook.book.cover)
+                    ? reviewedBook.book.cover
+                    : '../assets/images/book-cover-placeholder.jpg'
+                }}"
+                #bookCover
+                (error)="
+                  bookCover.onerror = null;
+                  bookCover.src = '../assets/images/book-cover-placeholder.jpg'
+                "
+                alt="book cover"
+              />
+            </div>
+            <div class="book-details">
+              <div class="book-heading">
+                <div class="book-title">
+                  <h3>{{ reviewedBook.book.title }}</h3>
+                </div>
+              </div>
+              <div class="book-body">
+                <div class="book-author">
+                  <p>
+                    By
+                    <span class="book-author-name">{{
+                      reviewedBook.book.author
+                    }}</span>
+                  </p>
+                </div>
+                <div class="book-action-buttons">
+                  <div
+                    class="book-action-button main-button"
+                    routerLink="/books/{{ reviewedBook.book.isbn }}"
+                  >
+                    View
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </ng-container>
+</div>

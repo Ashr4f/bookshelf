@@ -18,6 +18,7 @@ export class AppComponent {
   closeSearchResults: boolean = false;
   searchResults: any[] = [];
   searchLoading: boolean = false;
+  searchBarInput: any;
 
   @HostListener("document:click", ["$event"])
   clickedOutSide(event: any) {

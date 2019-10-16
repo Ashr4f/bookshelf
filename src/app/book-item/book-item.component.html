@@ -106,7 +106,7 @@
             </div>
 
             <ng-container *ngIf="BookAvailability && bookInMySchool">
-              <div class="book-action-button" (click)="rentCurrentBook()">
+              <div class="book-action-button main-button" (click)="rentCurrentBook()">
                 RENT
               </div>
             </ng-container>
@@ -116,13 +116,13 @@
                 BookAvailability === false && bookBorrowerUID === user.owner.uid
               "
             >
-              <div class="book-action-button" (click)="returnCurrentBook()">
+              <div class="book-action-button main-button" (click)="returnCurrentBook()">
                 RETURN BOOK
               </div>
             </ng-container>
 
             <div
-              class="book-action-button edit-button"
+              class="book-action-button main-button edit-button"
               routerLink="/books/{{ bookData.isbn }}/edit"
             >
               EDIT
@@ -130,7 +130,7 @@
 
             <!-- <div
               *ngIf="!hasOwnReview"
-              class="book-action-button review-button"
+              class="book-action-button main-button review-button"
             >
               Write a review
             </div> -->

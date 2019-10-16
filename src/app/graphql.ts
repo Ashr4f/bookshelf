@@ -55,6 +55,19 @@ export const ME_QUERY = gql`
             isbn
             title
             cover
+            author
+          }
+        }
+
+        bookReviews {
+          totalCount
+          nodes {
+            book {
+              isbn
+              title
+              author
+              cover
+            }
           }
         }
         ... on Junior {
