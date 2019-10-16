@@ -275,8 +275,8 @@
     </div>
 
     <div class="review-input" *ngIf="!hasOwnReview">
+      <h3 style="padding-left: 1rem;">Leave a review</h3>
       <div style="padding-left: 48px;">
-        <span>Your rate: </span>
         <nz-rate
           [(ngModel)]="bookReview"
           [nzTooltips]="tooltips"
@@ -301,6 +301,7 @@
           </nz-form-item>
           <nz-form-item>
             <button
+              style="background-color: #eb8a2e; border-color: #eb8a2e;"
               nz-button
               nzType="primary"
               [nzLoading]="submitting"

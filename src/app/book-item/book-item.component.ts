@@ -36,6 +36,8 @@ export class BookItemComponent implements OnInit {
   userSchoolSlug: any;
   loading: boolean = true;
   reviewUID: string;
+  submitting: boolean = false;
+  canceling: boolean = false;
 
   BookReviewInputs: string[] = ["ONE", "TWO", "THREE", "FOUR", "FIVE"];
 
@@ -179,6 +181,7 @@ export class BookItemComponent implements OnInit {
   }
 
   addOwnReview() {
+    this.submitting = true;
     this.gqlQueries
       .addBookReview(
         this.isbn,
@@ -187,17 +190,20 @@ export class BookItemComponent implements OnInit {
         this.myBookReviewComment
       )
       .then((res: any) => {
+        this.submitting = false;
         this.myBookReview = this.bookReview;
         this.hasOwnReview = true;
         this.reviewUID = res.data.addBookReview.uid;
         this.allBookReviews.push(res.data.addBookReview);
       })
       .catch((err: any) => {
+        this.submitting = false;
         console.error(err);
       });
   }
 
   editOwnReview() {
+    this.submitting = true;
     this.gqlQueries
       .editBookReview(
         this.reviewUID,
@@ -206,9 +212,11 @@ export class BookItemComponent implements OnInit {
         this.myBookReviewComment
       )
       .then((res: any) => {
+        this.submitting = false;
         this.myBookReview = this.bookReview;
       })
       .catch((err: any) => {
+        this.submitting = false;
         console.error(err);
       });
   }
@@ -226,7 +234,11 @@ export class BookItemComponent implements OnInit {
           this.myBookReview = undefined;
           this.hasOwnReview = false;
 
-          this.allBookReviews.pop();
+          this.allBookReviews.map((bookReview, index) => {
+            if (bookReview.reviewer.slug === this.user.owner.slug) {
+              this.allBookReviews.splice(index, 1);
+            }
+          });
         })
         .catch((err: any) => {
           console.error(err);
