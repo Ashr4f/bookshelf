@@ -31,7 +31,7 @@ npm run test
 
 👤 **Ashraf A., Abdel K., Cynthia M.**
 
-* Github: [@Ashr4f, @Cynthiamf, @Abood1991](https://github.com/Ashr4f, https://github.com/Cynthiamf, https://github.com/Abood1991)
+* Github: [@Ashr4f](https://github.com/Ashr4f), [@Cynthiamf](https://github.com/Cynthiamf), [@Abood1991](https://github.com/Abood1991)
 
 ## Show your support
 
