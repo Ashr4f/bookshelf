@@ -1,0 +1,76 @@
+@keyframes Test {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+body {
+  background: url(../img/books-1845614_1920.jpg) no-repeat center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  -webkit-background-size: cover;
+}
+body .home-page-container {
+  width: 50%;
+}
+body .home-page-container .page-title {
+  padding-top: 3rem;
+  font-family: "Special Elite", cursive;
+  text-align: center;
+  font-size: 30px;
+}
+body .home-page-container .page-title h1 {
+  color: #113d44 !important;
+}
+body .home-page-container .page-description {
+  font-family: "Muli", sans-serif;
+  margin-top: 2.5rem;
+}
+body .home-page-container .page-description .description-head {
+  text-align: center;
+  font-size: 25px;
+}
+body .home-page-container .page-description .description-menu {
+  font-size: 20px;
+  margin-left: 12.5rem;
+}
+body .redirect-links-container {
+  margin-top: 3rem;
+  text-align: center;
+}
+body .redirect-links-container span.info {
+  color: #113d44;
+  padding: 10px;
+  font-size: 30px;
+  background-color: rgba(56, 173, 169, 0.4);
+  font-family: "Audiowide", cursive;
+  animation: Test 2s infinite;
+}
+body #login-register {
+  margin-left: 235px;
+}
+body #login-register .login-register {
+  display: flex;
+  list-style-type: none;
+}
+body #login-register .login-register li {
+  margin-top: 3rem;
+  cursor: pointer;
+}
+body #login-register .login-register li span {
+  color: white;
+  padding: 10px 12px;
+  font-size: 20px;
+  background-color: rgba(56, 173, 169, 0.4);
+  margin-right: 30px;
+  border-radius: 30px;
+  font-family: "Muli", sans-serif;
+}
+
+/*# sourceMappingURL=home.component.css.map */

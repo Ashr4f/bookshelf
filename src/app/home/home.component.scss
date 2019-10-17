@@ -1,0 +1,97 @@
+$main-theme-color: #38ada9;
+$second-theme-color: #113d44;
+
+@keyframes Test {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+body {
+    background: url(../img/books-1845614_1920.jpg) no-repeat center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    -webkit-background-size: cover;
+
+    .home-page-container {
+        width: 50%;
+
+        .page-title {
+            padding-top: 6rem;
+            font-family: 'Special Elite', cursive;
+            text-align: center;
+            font-size: 30px;
+
+            h1 {
+                color: $second-theme-color !important;
+            }
+        }
+
+        .page-description {
+            font-family: 'Muli', sans-serif;
+            margin-top: 2.5rem;
+
+            .description-head {
+                text-align: center;
+                font-size: 25px;
+            }
+
+            .description-menu {
+                font-size: 20px;
+                margin-left: 12.5rem;
+            }
+        }
+    }
+
+    .redirect-links-container {
+
+        margin-top: 3rem;
+        text-align: center;
+
+        span.info {
+
+            color: $second-theme-color;
+            padding: 10px;
+            font-size: 30px;
+            background-color: rgba(56, 173, 169, 0.4);
+            font-family: 'Audiowide', cursive;
+            animation: Test 2s infinite;
+        }
+    }
+
+
+    #login-register {
+        margin-left: 235px;
+
+        .login-register {
+            display: flex;
+            list-style-type: none;
+
+            li {
+                margin-top: 3rem;
+                cursor: pointer;
+
+                span {
+                    color: white;
+                    padding: 10px 12px;
+                    font-size: 20px;
+                    background-color: rgba(56, 173, 169, 0.4);
+                    margin-right: 30px;
+                    border-radius: 30px;
+                    font-family: 'Muli', sans-serif;
+                }
+            }
+        }
+    }
+
+}
