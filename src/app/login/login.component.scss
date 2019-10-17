@@ -1,5 +1,15 @@
+.container {
+  margin-top: 10rem;
+
+  form {
+    padding: 100px 120px 70px 120px;
+    border-radius: 10px;
+    background-color: white;
+  }
+}
+
 .login-form {
-  max-width: 300px;
+  max-width: 600px;
 }
 
 .login-form-forgot {

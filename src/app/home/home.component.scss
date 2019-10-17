@@ -15,6 +15,27 @@ $second-theme-color: #113d44;
     }
 }
 
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    60% {
+        transform: translateY(-15px);
+    }
+
+    40% {
+        transform: translateY(-30px);
+    }
+
+
+}
+
 
 body {
     background: url(../img/books-1845614_1920.jpg) no-repeat center fixed;
@@ -61,9 +82,10 @@ body {
         span.info {
 
             color: $second-theme-color;
-            padding: 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
             font-size: 30px;
-            background-color: rgba(56, 173, 169, 0.4);
+            background-color: rgba(56, 173, 169, 0.2);
             font-family: 'Audiowide', cursive;
             animation: Test 2s infinite;
         }
@@ -92,6 +114,26 @@ body {
                 }
             }
         }
+    }
+
+    .arrow {
+        position: relative;
+        bottom: -2rem;
+        left: 50%;
+        margin-left: -20px;
+        width: 40px;
+        height: 40px;
+        top: 2rem;
+
+        /**
+   * Dark Arrow Down
+   */
+        background-image: url(../img/Circle-icons-arrow-up.svg);
+        background-size: contain;
+    }
+
+    .bounce {
+        animation: bounce 2s infinite;
     }
 
 }
