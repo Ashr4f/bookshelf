@@ -29,7 +29,7 @@ npm run test
 
 ## Author
 
-👤 **Ashraf A., Abdel K., Cynthia M.**
+👤 **Ashraf A., Cynthia M., Abdel K.**
 
 * Github: [@Ashr4f](https://github.com/Ashr4f), [@Cynthiamf](https://github.com/Cynthiamf), [@Abood1991](https://github.com/Abood1991)
 
