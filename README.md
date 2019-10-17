@@ -27,7 +27,7 @@ npm start
 npm run test
 ```
 
-## Author
+## Authors
 
 👤 **Ashraf A., Cynthia M., Abdel K.**
 
