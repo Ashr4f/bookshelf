@@ -3,9 +3,10 @@
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
 </p>
 
-> BeCode Bookshelf
+> BeCode's Library created with Angular, TypeScript & JavaScript.
 
-### 🏠 [Homepage](https://becode-bookshelves.netlify.com/)
+
+### 🏠 [Homepage](https://github.com/Ashr4f/bookshelf)
 
 ### ✨ [Demo](https://becode-bookshelves.netlify.com/)
 
@@ -27,15 +28,12 @@ npm start
 npm run test
 ```
 
-## Author
+## Authors
 
-👤 **Ashraf A., Abdel K., Cynthia M.**
+👤 **Ashraf A., Cynthia M., Abdel K.**
 
-* Github: [@Ashr4f, Cynthiamf, Abood1991](https://github.com/Ashr4f, Cynthiamf, Abood1991)
+* Github: [@Ashr4f](https://github.com/Ashr4f), [@Cynthiamf](https://github.com/Cynthiamf), [@Abood1991](https://github.com/Abood1991)
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
