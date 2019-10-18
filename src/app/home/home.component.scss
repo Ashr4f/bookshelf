@@ -48,7 +48,7 @@ body {
         width: 50%;
 
         .page-title {
-            padding-top: 6rem;
+            padding-top: 4rem;
             font-family: 'Special Elite', cursive;
             text-align: center;
             font-size: 30px;
@@ -60,7 +60,7 @@ body {
 
         .page-description {
             font-family: 'Muli', sans-serif;
-            margin-top: 2.5rem;
+            margin-top: 0.5rem;
 
             .description-head {
                 text-align: center;
@@ -68,7 +68,7 @@ body {
             }
 
             .description-menu {
-                font-size: 20px;
+                font-size: 15px;
                 margin-left: 12.5rem;
             }
         }
@@ -118,12 +118,12 @@ body {
 
     .arrow {
         position: relative;
-        bottom: -2rem;
+        bottom: -1rem;
         left: 50%;
         margin-left: -20px;
         width: 40px;
         height: 40px;
-        top: 4rem;
+        top: 3rem;
 
         /**
    * Dark Arrow Down
